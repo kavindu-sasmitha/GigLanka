@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/GigLanka.iml" filepath="$PROJECT_DIR$/GigLanka.iml" />
-      <module fileurl="file://$PROJECT_DIR$/back_end/back_end.iml" filepath="$PROJECT_DIR$/back_end/back_end.iml" />
     </modules>
   </component>
 </project>

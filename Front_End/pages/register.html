@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GigLanka | Register</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: #0f172a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: white;
+      padding: 20px 0;
+    }
+    .register-card {
+      background: rgba(30, 41, 59, 0.7);
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      width: 400px;
+    }
+    h2 { text-align: center; margin-bottom: 25px; }
+    .input-group { margin-bottom: 15px; }
+    label { display: block; font-size: 13px; color: #94a3b8; margin-bottom: 5px; }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      background: #1e293b;
+      color: white;
+      box-sizing: border-box;
+      outline: none;
+    }
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background: #10b981;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .btn:hover { background: #059669; }
+    .switch { text-align: center; margin-top: 15px; font-size: 13px; color: #94a3b8; }
+    .switch a { color: #10b981; text-decoration: none; }
+  </style>
+</head>
+<body>
+<div class="register-card">
+  <h2>Create Account</h2>
+  <form>
+    <div class="input-group">
+      <label>Full Name</label>
+      <input type="text" placeholder="Kavindu Sasmitha" required>
+    </div>
+    <div class="input-group">
+      <label>Email Address</label>
+      <input type="email" placeholder="kavindu@example.com" required>
+    </div>
+    <div class="input-group">
+      <label>NIC Number</label>
+      <input type="text" placeholder="2001XXXXXXXX" required>
+    </div>
+    <div class="input-group">
+      <label>User Role</label>
+      <select required>
+        <option value="EMPLOY">Employ</option>
+        <option value="TASK_OWNER">Task Owner</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <label>Password</label>
+      <input type="password" placeholder="••••••••" required>
+    </div>
+    <button type="submit" class="btn">Register Now</button>
+  </form>
+  <div class="switch">Already have an account? <a href="login.html">Login</a></div>
+</div>
+
+</body>
+</html>

@@ -61,13 +61,13 @@
   <form>
     <div class="input-group">
       <label>Username (Email)</label>
-      <input type="email" placeholder="kavindu@example.com" required>
+      <input type="email" id="email" placeholder="kavindu@example.com" required>
     </div>
     <div class="input-group">
       <label>Password</label>
-      <input type="password" placeholder="••••••••" required>
+      <input type="password" id="password" placeholder="••••••••" required>
     </div>
-    <button type="submit" class="btn" onclick="loginUser()">Sign In</button>
+    <button type="button" class="btn" onclick="loginUser()">Sign In</button>
   </form>
   <div class="switch">Don't have an account? <a href="register.html">Register</a></div>
 </div>
@@ -86,14 +86,13 @@
         password: password
       }),
       success: function(response) {
-
-        if (response.code === 200 && response.data && response.data.access_token) {
+        // Response එකේ code එක number එකක් ද string එකක් ද කියා පරීක්ෂා කරන්න (ඔයාගේ JSON එකේ 200 තිබුණේ number එකක් ලෙසයි)
+        if (response.code == 200 && response.data && response.data.access_token) {
           localStorage.setItem('jwtToken', response.data.access_token);
-
           alert("Login Successful!");
           window.location.href = "dashboard.html";
         } else {
-          alert("Login failed: " + response.message);
+          alert("Login failed: " + (response.message || "Invalid Response"));
         }
       },
       error: function(xhr) {

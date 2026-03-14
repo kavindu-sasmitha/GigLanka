@@ -57,34 +57,76 @@
 <body>
 <div class="register-card">
   <h2>Create Account</h2>
-  <form>
+  <form id="registerForm">
     <div class="input-group">
       <label>Full Name</label>
-      <input type="text" placeholder="Kavindu Sasmitha" required>
+      <input type="text" id="fullName" placeholder="Kavindu Sasmitha" required>
     </div>
     <div class="input-group">
       <label>Email Address</label>
-      <input type="email" placeholder="kavindu@example.com" required>
+      <input type="email" id="email" placeholder="kavindu@example.com" required>
     </div>
     <div class="input-group">
       <label>NIC Number</label>
-      <input type="text" placeholder="2001XXXXXXXX" required>
+      <input type="text" id="nic" placeholder="2001XXXXXXXX" required>
     </div>
     <div class="input-group">
       <label>User Role</label>
-      <select required>
+      <select id="role" required>
         <option value="EMPLOY">Employ</option>
         <option value="TASK_OWNER">Task Owner</option>
       </select>
     </div>
     <div class="input-group">
       <label>Password</label>
-      <input type="password" placeholder="••••••••" required>
+      <input type="password" id="password" placeholder="••••••••" required>
     </div>
     <button type="submit" class="btn">Register Now</button>
   </form>
   <div class="switch">Already have an account? <a href="login.html">Login</a></div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $('#registerForm').on('submit', function(e) {
+      e.preventDefault();
+      registerUser();
+    });
+  });
+
+  function registerUser() {
+    let fullName = $('#fullName').val();
+    let email = $('#email').val();
+    let nic = $('#nic').val();
+    let role = $('#role').val();
+    let password = $('#password').val();
+
+    $.ajax({
+      url: 'http://localhost:8080/api/v1/auth/signup',
+      method: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify({
+        fullName: fullName,
+        userName: email,
+        nic: nic,
+        role: role,
+        password: password
+      }),
+      success: function(response) {
+        if (response.code === 200) {
+          alert(response.message);
+          window.location.href = "login.html";
+        } else {
+          alert("Registration Failed: " + response.message);
+        }
+      },
+      error: function(xhr) {
+        console.error("Status:", xhr.status);
+        alert("Error " + xhr.status + ": Could not connect to server.");
+      }
+    });
+  }
+</script>
 </body>
 </html>

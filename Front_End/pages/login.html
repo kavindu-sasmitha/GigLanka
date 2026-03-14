@@ -67,9 +67,41 @@
       <label>Password</label>
       <input type="password" placeholder="••••••••" required>
     </div>
-    <button type="submit" class="btn">Sign In</button>
+    <button type="submit" class="btn" onclick="loginUser()">Sign In</button>
   </form>
   <div class="switch">Don't have an account? <a href="register.html">Register</a></div>
 </div>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+  function loginUser() {
+    let email = $('#email').val();
+    let password = $('#password').val();
+
+    $.ajax({
+      url: 'http://localhost:8080/api/v1/auth/signin',
+      method: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify({
+        userName: email,
+        password: password
+      }),
+      success: function(response) {
+
+        if (response.code === 200 && response.data && response.data.access_token) {
+          localStorage.setItem('jwtToken', response.data.access_token);
+
+          alert("Login Successful!");
+          window.location.href = "dashboard.html";
+        } else {
+          alert("Login failed: " + response.message);
+        }
+      },
+      error: function(xhr) {
+        alert("Error " + xhr.status + ": Login Failed");
+        console.log(xhr.responseText);
+      }
+    });
+  }
+</script>
 </body>
 </html>

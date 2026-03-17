@@ -3,7 +3,7 @@ package edu.lk.ijse.back_end.service;
 import edu.lk.ijse.back_end.dto.AuthDto;
 import edu.lk.ijse.back_end.dto.AuthResponseDto;
 import edu.lk.ijse.back_end.dto.RegisterDto;
-import edu.lk.ijse.back_end.entity.Role;
+import edu.lk.ijse.back_end.entity.enums.Role;
 import edu.lk.ijse.back_end.entity.User;
 import edu.lk.ijse.back_end.repo.UserRepo;
 import edu.lk.ijse.back_end.util.JwtUtil;
@@ -40,7 +40,7 @@ public class UserService {
     }
 
     public AuthResponseDto authenticate(AuthDto authDTO){
-        // Spring Security හරහා Authentication එක සිදු කිරීම
+        // 1. Spring Security හරහා Authentication එක සිදු කිරීම
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         authDTO.getUserName(),
@@ -48,10 +48,14 @@ public class UserService {
                 )
         );
 
+        // 2. User ව Database එකෙන් සොයා ගැනීම
         User user = userRepository.findByUsername(authDTO.getUserName())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        String token = jwtUtil.generateToken(user.getUsername());
+        // 3. මෙන්න මෙතනට user.getRole().name() එක එකතු කරන්න (Error එක එන්නේ මෙතනටයි)
+        // user.getRole() Enum එකක් නම් .name() පාවිච්චි කරන්න, String එකක් නම් කෙලින්ම දෙන්න.
+        String token = jwtUtil.generateToken(user.getUsername(), user.getRole().name());
+
         return new AuthResponseDto(token);
     }
 }

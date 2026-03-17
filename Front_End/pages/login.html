@@ -86,13 +86,38 @@
         password: password
       }),
       success: function(response) {
-        // Response එකේ code එක number එකක් ද string එකක් ද කියා පරීක්ෂා කරන්න (ඔයාගේ JSON එකේ 200 තිබුණේ number එකක් ලෙසයි)
+        // 1. Response එක සාර්ථකද කියා බැලීම
         if (response.code == 200 && response.data && response.data.access_token) {
-          localStorage.setItem('jwtToken', response.data.access_token);
-          alert("Login Successful!");
-          window.location.href = "dashboard.html";
+
+          const token = response.data.access_token;
+          localStorage.setItem('jwtToken', token);
+
+          try {
+            // 2. JWT Token එකේ මැද කොටස (Payload) Decode කිරීම
+            // Token එක කොටස් 3කි: Header.Payload.Signature
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const payload = JSON.parse(atob(base64));
+
+            console.log("User Payload:", payload); // Debug කරලා බලන්න role එක තියෙන තැන
+
+            // 3. Role එක අනුව Redirect කිරීම
+            // ඔබේ Backend එකෙන් එන role name එක අනුව මෙතන "EMPLOYEE" හෝ "TASK_OWNER" වෙනස් කරන්න
+            const userRole = payload.role;
+
+            if (userRole === "EMPLOY") {
+              window.location.href = "emp_dashboard.html";
+            } else if (userRole === "TASK_OWNER") {
+              window.location.href = "owner_dashboard.html";
+            }
+
+          } catch (error) {
+            console.error("Error decoding token:", error);
+            alert("Login success, but could not determine user role.");
+          }
+
         } else {
-          alert("Login failed: " + (response.message || "Invalid Response"));
+          alert("Login failed: " + (response.message || "Invalid Credentials"));
         }
       },
       error: function(xhr) {

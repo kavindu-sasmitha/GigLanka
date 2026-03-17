@@ -1,6 +1,6 @@
 package edu.lk.ijse.back_end.controller;
 
-import edu.lk.ijse.back_end.dto.ApiResponse;
+import edu.lk.ijse.back_end.util.ApiResponse;
 import edu.lk.ijse.back_end.dto.AuthDto;
 import edu.lk.ijse.back_end.dto.RegisterDto;
 import edu.lk.ijse.back_end.service.UserService;

@@ -1,5 +1,6 @@
 package edu.lk.ijse.back_end.entity;
 
+import edu.lk.ijse.back_end.entity.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;

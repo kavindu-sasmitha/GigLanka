@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TaskDto {
     @NotNull
-    private long id;
+    private Long id;
     @NotBlank()
     private String title;
     private double budget;

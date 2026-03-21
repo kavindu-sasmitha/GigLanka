@@ -2,10 +2,146 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GigLanka | Employee Dashboard</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <style>
+        body { margin: 0; font-family: 'Inter', sans-serif; background: #0f172a; color: white; min-height: 100vh; }
+        .sidebar { height: 100vh; background: rgba(30, 41, 59, 0.5); backdrop-filter: blur(10px); border-right: 1px solid rgba(255, 255, 255, 0.1); position: fixed; width: 260px; padding: 30px 20px; z-index: 1000; }
+        .main-content { margin-left: 260px; padding: 40px; }
+        .glass-card { background: rgba(30, 41, 59, 0.7); padding: 25px; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); margin-bottom: 25px; }
+
+        #map { height: 400px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #334155; filter: grayscale(0.5) invert(0.9) hue-rotate(180deg); }
+
+        .task-card { background: #1e293b; border: 1px solid #334155; padding: 15px; border-radius: 12px; margin-bottom: 12px; transition: 0.3s; }
+        .task-card:hover { border-color: #10b981; transform: translateY(-2px); }
+
+        select { background: #1e293b !important; border: 1px solid #334155 !important; color: white !important; border-radius: 8px !important; margin-bottom: 20px; }
+
+        .btn-apply { background: #10b981; border: none; border-radius: 8px; padding: 8px 16px; font-weight: 600; color: white; }
+        .btn-direction { background: #3b82f6; border: none; border-radius: 8px; padding: 8px 16px; font-weight: 600; color: white; margin-right: 5px; text-decoration: none; display: inline-block; font-size: 14px; }
+
+        .nav-link { color: #94a3b8 !important; padding: 12px 15px; border-radius: 10px; margin-bottom: 10px; text-decoration: none; display: block; }
+        .nav-link.active { background: rgba(16, 185, 129, 0.1); color: #10b981 !important; }
+    </style>
 </head>
 <body>
-<h1>Employee Dashboard</h1>
 
+<div class="sidebar">
+    <h3 class="fw-bold mb-5" style="color: #10b981;">GigLanka</h3>
+    <nav class="nav flex-column">
+        <a class="nav-link active"><i class="fas fa-search me-2"></i> Browse Tasks</a>
+        <a class="nav-link"><i class="fas fa-briefcase me-2"></i> My Applications</a>
+        <div class="mt-5"><a class="nav-link text-danger" href="#"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></div>
+    </nav>
+</div>
+
+<div class="main-content">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="glass-card">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5><i class="fas fa-map-marked-alt text-success me-2"></i> Explore Tasks</h5>
+                    <select id="districtFilter" class="form-select w-50" onchange="filterTasks()">
+                        <option value="All">All Districts</option>
+                        <option value="Colombo">Colombo</option>
+                        <option value="Panadura">Panadura</option>
+                        <option value="Galle">Galle</option>
+                        <option value="Kandy">Kandy</option>
+                    </select>
+                </div>
+
+                <div id="map"></div>
+
+                <div id="taskList">
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="glass-card">
+                <h5><i class="fas fa-info-circle text-info me-2"></i> Instructions</h5>
+                <p class="small text-muted">1. Select a district to filter tasks.<br>2. Click on a map marker to see details.<br>3. Use 'Get Directions' to open Google Maps.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    let allTasks = []; // Backend එකෙන් එන ඔක්කොම tasks මෙතන තියාගන්නවා
+    const map = L.map('map').setView([6.9271, 79.8612], 10);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    let markersLayer = L.layerGroup().addTo(map);
+
+    $(document).ready(function() {
+        fetchAllTasks();
+    });
+
+    function fetchAllTasks() {
+        $.get('http://localhost:8080/api/v1/task/all', function(data) {
+            allTasks = data;
+            filterTasks(); // මුලින්ම ඔක්කොම පෙන්වනවා
+        });
+    }
+
+    function filterTasks() {
+        const selectedDist = $("#districtFilter").val();
+        markersLayer.clearLayers(); // Map එකේ කලින් තිබ්බ markers අයින් කරනවා
+        $("#taskList").empty();
+
+        const filtered = allTasks.filter(t => selectedDist === "All" || t.locationName === selectedDist);
+
+        filtered.forEach(task => {
+            // 1. Map එකට Marker එකක් දානවා
+            const marker = L.marker([task.latitude, task.longitude]).addTo(markersLayer);
+
+            const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${task.latitude},${task.longitude}`;
+
+            marker.bindPopup(`
+        <div style="color:black">
+          <strong>${task.title}</strong><br>
+          Budget: LKR ${task.budget}<br>
+          <a href="${googleMapsUrl}" target="_blank" class="btn-direction mt-2" style="color:white; padding:5px; text-decoration:none; border-radius:5px; background:#3b82f6; display:block; text-align:center;">Get Directions</a>
+        </div>
+      `);
+
+            // 2. පහළ List එකට Card එකක් දානවා
+            $("#taskList").append(`
+        <div class="task-card">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="mb-1">${task.title}</h6>
+              <p class="small text-muted mb-0">
+                <i class="fas fa-coins me-1"></i> LKR ${task.budget} |
+                <i class="fas fa-map-marker-alt me-1"></i> ${task.locationName}
+              </p>
+            </div>
+            <div>
+              <a href="${googleMapsUrl}" target="_blank" class="btn-direction"><i class="fas fa-location-arrow"></i></a>
+              <button class="btn-apply" onclick="applyTask(${task.id})">Apply</button>
+            </div>
+          </div>
+        </div>
+      `);
+        });
+
+        if(filtered.length > 0 && selectedDist !== "All") {
+            map.panTo([filtered[0].latitude, filtered[0].longitude]);
+        }
+    }
+
+    function applyTask(id) {
+        alert("Applying for Task ID: " + id);
+        // මෙතන කලින් ලියපු application POST request එක ලියන්න
+    }
+</script>
 </body>
 </html>

@@ -56,6 +56,6 @@ public class UserService {
         // user.getRole() Enum එකක් නම් .name() පාවිච්චි කරන්න, String එකක් නම් කෙලින්ම දෙන්න.
         String token = jwtUtil.generateToken(user.getUsername(), user.getRole().name());
 
-        return new AuthResponseDto(token);
+        return new AuthResponseDto(token, user.getId());
     }
 }

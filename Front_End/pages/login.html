@@ -88,7 +88,7 @@
       success: function(response) {
         // 1. Response එක සාර්ථකද කියා බැලීම
         if (response.code == 200 && response.data && response.data.access_token) {
-
+          localStorage.setItem("owner_id", response.data.id);
           const token = response.data.access_token;
           localStorage.setItem('jwtToken', token);
 

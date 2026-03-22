@@ -19,11 +19,11 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String title;
-    private String description;
     private double budget;
     private String locationName;
     private double latitude;
     private double longitude;
+    private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
     private TaskStatus status = TaskStatus.PENDING;

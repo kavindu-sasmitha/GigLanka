@@ -19,6 +19,8 @@ public class TaskDto {
     private String locationName;
     private double latitude;
     private double longitude;
+    private String phoneNumber;
     @NotBlank()
     private String status;
+    private Long owner_id;
 }

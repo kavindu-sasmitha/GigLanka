@@ -22,5 +22,5 @@ public class TaskDto {
     private String phoneNumber;
     @NotBlank()
     private String status;
-    private Long owner_id;
+    private Long ownerId;
 }

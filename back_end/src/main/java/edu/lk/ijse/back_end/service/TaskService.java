@@ -9,4 +9,6 @@ public interface TaskService {
     List<TaskDto> getAllTasks();
     void updateTask(TaskDto taskDto);
     void deleteTaskById(Long id);
+
+    List<TaskDto> getAllTasksByOwnerId(Long ownerId);
 }

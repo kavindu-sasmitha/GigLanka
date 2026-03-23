@@ -29,8 +29,8 @@ public class TaskServiceImpl implements TaskService {
         }
 
         Task task = modelMapper.map(taskDto, Task.class);
-        User owner = userRepo.findById(taskDto.getOwner_id())
-                .orElseThrow(() -> new RuntimeException("User not found with ID: " + taskDto.getOwner_id()));
+        User owner = userRepo.findById(taskDto.getOwnerId())
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + taskDto.getOwnerId()));
 
         // 3. Task එකට අදාළ User (owner) ව set කරන්න
         task.setOwner(owner);
@@ -53,4 +53,27 @@ public class TaskServiceImpl implements TaskService {
     public void deleteTaskById(Long id) {
 
     }
+
+    @Override
+    public List<TaskDto> getAllTasksByOwnerId(Long id) {
+        // 1. Repository එක හරහා අදාළ Owner ට අයිති Task Entity ලැයිස්තුව ලබා ගැනීම
+        List<Task> tasks = taskRepo.getTasksByOwnerId(id);
+
+        // 2. Entity ලැයිස්තුව TaskDto ලැයිස්තුවකට Map කිරීම
+        return tasks.stream()
+                .map(task -> {
+                    TaskDto dto = modelMapper.map(task, TaskDto.class);
+
+                    // Entity එකේ 'owner' object එකක් ඇති නිසා,
+                    // එහි ID එක අරන් DTO එකේ 'owner_id' එකට manual සෙට් කරන්න
+                    if (task.getOwner() != null) {
+                        dto.setOwnerId(task.getOwner().getId());
+                    }
+
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
+
 }

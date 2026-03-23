@@ -45,4 +45,16 @@ public class TaskController {
     public List<TaskDto> getAllTasks(){
         return taskService.getAllTasks();
     }
+    @GetMapping("/{owner_id}")
+    public ResponseEntity<ApiResponse<List<TaskDto>>> getAllTasksByUserId(@PathVariable Long owner_id) {
+        // 1. Service එක හරහා database එකෙන් data ටික ගන්නවා
+        List<TaskDto> taskList = taskService.getAllTasksByOwnerId(owner_id);
+
+        // 2. null වෙනුවට taskList එක ඇතුළත් කරන්න
+        return new ResponseEntity<>(new ApiResponse<>(
+                200,
+                "Tasks fetched successfully",
+                taskList // මෙතනට taskList එක අනිවාර්යයෙන් දාන්න
+        ), HttpStatus.OK);
+    }
 }

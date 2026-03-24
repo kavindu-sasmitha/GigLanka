@@ -46,7 +46,7 @@
         <form id="taskForm">
           <div class="row g-3">
             <div class="col-12"><label>Task Title</label><input type="text" id="taskTitle" class="form-control" placeholder="Task Title"></div>
-            <div class="col-md-6"><label>District</label><select id="district" class="form-select"><option value="Colombo">Colombo</option><option value="Galle">Galle</option></select></div>
+            <div class="col-md-6"><label>District</label><select id="district" class="form-select"><option value="Colombo">Colombo</option><option value="Galle">Galle</option><option value="Kandy">Kandy</option></select></div>
             <div class="col-md-6"><label>Budget (LKR)</label><input type="number" id="budget" class="form-control"></div>
             <div class="col-md-12"><label>Phone</label><input type="text" id="phone" class="form-control"></div>
             <div class="col-12 mt-4"><button type="button" class="btn btn-publish w-100" onclick="saveTask()">Publish Task</button></div>
@@ -85,35 +85,27 @@
       <div class="modal-header border-0"><h5 class="modal-title">Edit Task</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
       <div class="modal-body">
         <input type="hidden" id="editTaskId">
-        <div class="mb-3"><label>Title</label><input type="text" id="editTitle" class="form-control"></div>
-        <div class="mb-3"><label>Budget</label><input type="number" id="editBudget" class="form-control"></div>
-      </div>
-      <div class="modal-footer border-0"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button><button type="button" class="btn btn-success" onclick="updateTask()">Save Changes</button></div>
-    </div>
-  </div>
-</div>
+        <input type="hidden" id="editLat">
+        <input type="hidden" id="editLng">
+        <input type="hidden" id="editOwnerId">
 
-<div class="modal fade" id="viewProfileModal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content text-center p-4">
-      <div class="modal-header border-0 justify-content-center">
-        <div class="profile-initial" id="profInitial">?</div>
-      </div>
-      <div class="modal-body pt-0">
-        <h4 id="profName" class="mb-1">---</h4>
-        <p id="profRole" class="text-success small mb-3">Employee</p>
-        <hr style="border-color: rgba(255,255,255,0.1)">
-        <div class="text-start">
-          <label>Full Name</label>
-          <p id="profFullName" class="mb-3">---</p>
-          <label>Email / Username</label>
-          <p id="profEmail" class="mb-3">---</p>
-          <label>NIC Number</label>
-          <p id="profNIC" class="mb-0">---</p>
+        <div class="mb-3"><label>Title</label><input type="text" id="editTitle" class="form-control"></div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label>District</label>
+            <select id="editDistrict" class="form-select">
+              <option value="Colombo">Colombo</option>
+              <option value="Galle">Galle</option>
+              <option value="Kandy">Kandy</option>
+            </select>
+          </div>
+          <div class="col-md-6 mb-3"><label>Budget</label><input type="number" id="editBudget" class="form-control"></div>
         </div>
+        <div class="mb-3"><label>Phone Number</label><input type="text" id="editPhone" class="form-control"></div>
       </div>
       <div class="modal-footer border-0">
-        <button type="button" class="btn btn-outline-light w-100" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-success" onclick="updateTask()">Save Changes</button>
       </div>
     </div>
   </div>
@@ -133,149 +125,112 @@
     loadApplications();
   });
 
-  // 2. Save Task
   function saveTask() {
-    let title = $("#taskTitle").val();
-    let locationName = $("#district").val();
-    let budget = $("#budget").val();
-    let phoneNumber = $("#phone").val();
     const position = marker.getLatLng();
-    let idFromStorage = localStorage.getItem("owner_id");
-
-    // සරල Validation එකක්
-    if(!title || !budget) {
-      alert("Please fill in the Task Title and Budget!");
-      return;
-    }
-
-    // JSON Object එක DTO එකට ගැලපෙන විදිහට හදනවා
     let taskData = {
-      id: 0, // Backend එකේ long id නිසා 0 යවමු
-      title: title,
-      locationName: locationName,
-      budget: parseFloat(budget),
+      id: 0,
+      title: $("#taskTitle").val(),
+      locationName: $("#district").val(),
+      budget: parseFloat($("#budget").val()) || 0.0,
       latitude: position.lat,
       longitude: position.lng,
-      phoneNumber: phoneNumber,
-      ownerId:parseInt(idFromStorage),
-      status: "PENDING" // DTO එකේ @NotBlank තියෙන නිසා මේක අනිවාර්යයි
+      phoneNumber: $("#phone").val(),
+      ownerId: parseInt(localStorage.getItem("owner_id")),
+      status: "PENDING"
     };
-
-    console.log("Sending Data:", taskData);
 
     $.ajax({
       url: 'http://localhost:8080/api/v1/task',
       method: 'POST',
       contentType: 'application/json',
       data: JSON.stringify(taskData),
-      success: function (response) {
-        alert("Success: Task Published Successfully!");
-        // Form එක clear කරනවා
-        $("#taskTitle").val("");
-        $("#budget").val("");
-        // Marker එක මුල් තැනට (Colombo) ගන්නවා
-        marker.setLatLng([6.9271, 79.8612]);
-        map.setView([6.9271, 79.8612], 13);
+      success: () => {
+        alert("Success: Task Published!");
+        $("#taskForm")[0].reset();
+        getAllTasksByUserId();
       },
-      error: function (xhr) {
-        console.error("Error Detail:", xhr.responseText);
-        alert("Error " + xhr.status + ": " + (xhr.responseJSON ? xhr.responseJSON.message : "Failed to save task"));
-      }
+      error: (xhr) => alert("Error: " + xhr.status)
     });
   }
+
   function getAllTasksByUserId() {
     let ownerId = localStorage.getItem("owner_id");
-
-    if (!ownerId) {
-      console.error("Owner ID not found!");
-      return;
-    }
-
-    $.get(`http://localhost:8080/api/v1/task/${ownerId}`, function(res) {
+    $.get(`http://localhost:8080/api/v1/task/${ownerId}`, (res) => {
       let rows = "";
-
-      // මෙතන res.data ලෙස පරීක්ෂා කරන්න (ඔබේ ApiResponse එකේ field එක data නම්)
-      if (res.data && res.data.length > 0) {
+      if (res.data) {
         res.data.forEach(task => {
+          // Task object එක string එකක් ලෙස pass කිරීම (වැදගත්!)
+          const taskStr = JSON.stringify(task).replace(/"/g, '&quot;');
           rows += `<tr>
-                  <td>${task.title}</td>
-                  <td>${task.budget}</td>
-                  <td><span class="badge bg-primary">${task.status}</span></td>
-                  <td>
-                      <button class="btn btn-sm btn-info me-1" onclick="openEditModal(${task.id}, '${task.title}', ${task.budget})">
-                          <i class="fas fa-edit"></i>
-                      </button>
-                      <button class="btn btn-sm btn-danger" onclick="deleteTask(${task.id})">
-                          <i class="fas fa-trash"></i>
-                      </button>
-                  </td>
-              </tr>`;
+            <td>${task.title}</td>
+            <td>${task.budget}</td>
+            <td><span class="badge bg-primary">${task.status}</span></td>
+            <td>
+              <button class="btn btn-sm btn-info me-1" onclick="openEditModal('${taskStr}')"><i class="fas fa-edit"></i></button>
+              <button class="btn btn-sm btn-danger" onclick="deleteTask(${task.id})"><i class="fas fa-trash"></i></button>
+            </td>
+          </tr>`;
         });
-      } else {
-        rows = "<tr><td colspan='4' class='text-center'>No tasks found.</td></tr>";
       }
-
       $("#myTaskTableBody").html(rows);
-    }).fail(function(xhr) {
-      console.error("Error loading tasks:", xhr.responseText);
     });
   }
 
-  function deleteTask(id) {
-    if(confirm("Delete this task?")) {
-      $.ajax({ url: `http://localhost:8080/api/v1/task/${id}`, method: 'DELETE', success: () => getAllTasksByUserId() });
-    }
-  }
+  function openEditModal(taskJson) {
+    const task = JSON.parse(taskJson);
+    $("#editTaskId").val(task.id);
+    $("#editTitle").val(task.title);
+    $("#editBudget").val(task.budget);
+    $("#editDistrict").val(task.locationName);
+    $("#editPhone").val(task.phoneNumber);
+    $("#editLat").val(task.latitude);
+    $("#editLng").val(task.longitude);
+    $("#editOwnerId").val(task.ownerId);
 
-  function openEditModal(id, title, budget) {
-    $("#editTaskId").val(id); $("#editTitle").val(title); $("#editBudget").val(budget);
     new bootstrap.Modal($('#editTaskModal')).show();
   }
 
   function updateTask() {
-    let id = $("#editTaskId").val();
-    let data = { title: $("#editTitle").val(), budget: $("#editBudget").val() };
-    $.ajax({ url: `http://localhost:8080/api/v1/task/${id}`, method: 'PUT', contentType: 'application/json', data: JSON.stringify(data), success: () => { alert("Updated!"); location.reload(); } });
+    const id = $("#editTaskId").val();
+    const updateData = {
+      id: parseInt(id),
+      title: $("#editTitle").val(),
+      budget: parseFloat($("#editBudget").val()) || 0.0,
+      locationName: $("#editDistrict").val(),
+      latitude: parseFloat($("#editLat").val()) || 0.0,
+      longitude: parseFloat($("#editLng").val()) || 0.0,
+      phoneNumber: $("#editPhone").val(),
+      status: "PENDING",
+      ownerId: parseInt($("#editOwnerId").val())
+    };
+
+    $.ajax({
+      url: `http://localhost:8080/api/v1/task/${id}`,
+      method: 'PUT',
+      contentType: 'application/json',
+      data: JSON.stringify(updateData),
+      success: () => {
+        alert("Updated!");
+        location.reload();
+      },
+      error: (xhr) => console.log(xhr.responseText)
+    });
   }
 
-  // --- Application Functions ---
+  function deleteTask(id) {
+    if(confirm("Delete task?")) {
+      $.ajax({ url: `http://localhost:8080/api/v1/task/${id}`, method: 'DELETE', success: () => getAllTasksByUserId() });
+    }
+  }
+
   function loadApplications() {
     $.get("http://localhost:8080/api/v1/application/all", (res) => {
       let rows = "";
       res.forEach(app => {
-        rows += `<tr>
-          <td>ID: ${app.task_id}</td>
-          <td><button class="btn btn-sm btn-outline-info" onclick="viewEmployeeProfile(${app.employee_id})"><i class="fas fa-user me-1"></i> View Profile</button></td>
-          <td>
-            <button class="btn btn-sm btn-success me-1" onclick="updateAppStatus(${app.id}, 'ACCEPTED')"><i class="fas fa-check"></i></button>
-            <button class="btn btn-sm btn-danger" onclick="updateAppStatus(${app.id}, 'REJECTED')"><i class="fas fa-times"></i></button>
-          </td>
-        </tr>`;
+        rows += `<tr><td>ID: ${app.task_id}</td><td>Employee ${app.employee_id}</td><td>Action</td></tr>`;
       });
       $("#appTableBody").html(rows);
     });
-  }
-
-  // --- View Employee Profile Function ---
-  function viewEmployeeProfile(empId) {
-    $.ajax({
-      url: `http://localhost:8080/api/v1/user/${empId}`,
-      method: 'GET',
-      success: function(user) {
-        $("#profInitial").text(user.fullName.charAt(0).toUpperCase());
-        $("#profName").text(user.fullName);
-        $("#profFullName").text(user.fullName);
-        $("#profEmail").text(user.userName);
-        $("#profNIC").text(user.nic || "Not Provided");
-
-        new bootstrap.Modal($('#viewProfileModal')).show();
-      },
-      error: () => alert("Could not load employee profile.")
-    });
-  }
-
-  function updateAppStatus(id, status) {
-    $.ajax({ url: `http://localhost:8080/api/v1/application/${id}?status=${status}`, method: 'PATCH', success: () => loadApplications() });
   }
 
   function logout() { localStorage.clear(); window.location.href = "login.html"; }

@@ -46,12 +46,20 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void updateTask(TaskDto taskDto) {
-        if(taskDto == null) {
-            throw new IllegalArgumentException("TaskDto is null");
+        if(taskDto == null || taskDto.getId() == null) {
+            throw new IllegalArgumentException("Task ID is required for update");
         }
-        Task task=modelMapper.map(taskDto, Task.class);
-        taskRepo.save(modelMapper.map(task, Task.class));
 
+        // DB එකේ දැනට තියෙන Task එක තියෙනවාද කියලා බලන්න (Optional but recommended)
+        if (!taskRepo.existsById(taskDto.getId())) {
+            throw new RuntimeException("Task not found with ID: " + taskDto.getId());
+        }
+
+        // Map DTO to Entity
+        Task task = modelMapper.map(taskDto, Task.class);
+
+        // Save the entity
+        taskRepo.save(task);
     }
 
     @Override

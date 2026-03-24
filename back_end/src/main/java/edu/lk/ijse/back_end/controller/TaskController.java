@@ -27,7 +27,7 @@ public class TaskController {
 
 
     }
-    @PutMapping
+    @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<String>>updateTask(@RequestBody @Valid TaskDto taskDto){
         taskService.updateTask(taskDto);
         return new ResponseEntity<>(new ApiResponse<>(

@@ -10,5 +10,6 @@ public interface TaskApplicationService {
     List<TaskApplicationDto> getAllApplications();
     void updateStatus(long id, String status);
     void deleteApplication(long id);
+    List<TaskApplicationDto> getAllTasksByOwnerId(long employeeId);
 }
 

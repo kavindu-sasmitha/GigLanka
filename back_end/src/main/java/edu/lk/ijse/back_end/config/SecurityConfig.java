@@ -55,11 +55,14 @@ public class SecurityConfig {
     }
 
     // 3. CORS Policy එක මෙතන Define කරනවා (Frontend Port එකට ඉඩ දීම)
+    // 3. CORS Policy එක මෙතන Define කරනවා (Postman සහ Frontend දෙකටම ඉඩ දීම)
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Frontend එක run වෙන origin එක (IntelliJ port එක)
-        configuration.setAllowedOrigins(List.of("http://localhost:63342"));
+
+        // මෙතනට "*" දැම්මම ඕනෑම තැනක සිට (Postman/Browser) access කරන්න පුළුවන්
+        configuration.setAllowedOriginPatterns(List.of("*"));
+
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Cache-Control"));
         configuration.setAllowCredentials(true);

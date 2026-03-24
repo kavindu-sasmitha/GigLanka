@@ -46,12 +46,17 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void updateTask(TaskDto taskDto) {
+        if(taskDto == null) {
+            throw new IllegalArgumentException("TaskDto is null");
+        }
+        Task task=modelMapper.map(taskDto, Task.class);
+        taskRepo.save(modelMapper.map(task, Task.class));
 
     }
 
     @Override
     public void deleteTaskById(Long id) {
-
+        taskRepo.deleteById(id);
     }
 
     @Override

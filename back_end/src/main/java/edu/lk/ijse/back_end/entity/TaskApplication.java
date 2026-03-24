@@ -31,5 +31,7 @@ public class TaskApplication {
     @Enumerated(EnumType.STRING)
     private ApplicationStatus status = ApplicationStatus.PENDING;
 
+    private String title;
+
     private LocalDateTime appliedAt = LocalDateTime.now();
 }

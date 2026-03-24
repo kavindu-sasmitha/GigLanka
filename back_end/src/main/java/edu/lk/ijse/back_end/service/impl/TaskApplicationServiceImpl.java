@@ -28,6 +28,7 @@ public class TaskApplicationServiceImpl implements TaskApplicationService {
     private final UserRepo userRepository;
     private final ModelMapper mapper;
 
+
     @Override
     public void saveApplication(TaskApplicationDto dto) {
         // Task එක සහ User එක database එකෙන් හොයාගන්නවා
@@ -77,5 +78,32 @@ public class TaskApplicationServiceImpl implements TaskApplicationService {
     @Override
     public void deleteApplication(long id) {
         repository.deleteById(id);
+    }
+
+    @Override
+    public List<TaskApplicationDto> getAllTasksByOwnerId(long employeeId) {
+        // 1. Employee ට අදාළ සියලුම Task Applications ලබා ගැනීම
+        List<TaskApplication> applyTaskList = repository.findByEmployeeId(employeeId);
+
+        // 2. Stream එක භාවිතා කර Map කිරීම
+        return applyTaskList.stream().map(
+                taskApplication -> {
+                    // ModelMapper මගින් base fields (id, status etc.) map කිරීම
+                    TaskApplicationDto dto = mapper.map(taskApplication, TaskApplicationDto.class);
+
+                    // Task ID එක manual සෙට් කිරීම
+                    if (taskApplication.getTask() != null) {
+                        dto.setTask_id(taskApplication.getTask().getId());
+                    }
+
+                    // Employee ID එක manual සෙට් කිරීම
+                    if (taskApplication.getEmployee() != null) {
+                        dto.setEmployee_id(taskApplication.getEmployee().getId());
+                    }
+
+                    // අවසානයේ පිරිසැකසුම් කළ dto එක return කළ යුතුයි
+                    return dto;
+                }
+        ).collect(Collectors.toList());
     }
 }

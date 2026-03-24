@@ -64,10 +64,21 @@
         </div>
 
         <div class="col-lg-4">
-            <div class="glass-card">
-                <h5><i class="fas fa-info-circle text-info me-2"></i> Instructions</h5>
-                <p class="small text-muted">1. Select a district to filter tasks.<br>2. Click on a map marker to see details.<br>3. Use 'Get Directions' to open Google Maps.</p>
-            </div>
+            <table class="table table-hover">
+                <thead class="table-dark">
+                <tr>
+                    <th>Task Title</th>
+                    <th>Applied Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody id="employeeTaskTableBody">
+                <tr>
+                    <td colspan="4" class="text-center">Loading tasks...</td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
@@ -82,6 +93,7 @@
     let markersLayer = L.layerGroup().addTo(map);
 
     $(document).ready(function() {
+        getAllTasksByUserId();
         fetchAllTasks();
     });
 
@@ -154,7 +166,8 @@
             id: 0,
             task_id: taskId,               // Function එකට argument එකක් විදියට එන ID එක
             employee_id: parseInt(loggedInUserId),
-            status: "PENDING"
+            status: "PENDING",
+            title:allTasks.title,
         };
 
         console.log("Applying for Task ID:", taskId);
@@ -175,6 +188,68 @@
             }
         });
     }
+    function getAllTasksByUserId() {
+        let employeeId = localStorage.getItem("owner_id"); // මෙහි ඔබ store කර ඇත්තේ ලොග් වූ අයගේ ID එකයි
+        let token = localStorage.getItem("jwtToken"); // JWT Token එක අවශ්‍ය නම් මෙතනින් ගන්න
+
+        if (!employeeId) {
+            console.error("Employee ID not found!");
+            return;
+        }
+
+        // මෙහි URL එක ඔබේ Backend එකට අනුව වෙනස් විය හැකියි
+        // (උදා: /api/v1/application/employee/5)
+        $.ajax({
+            url: `http://localhost:8080/api/v1/application/${employeeId}`,
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token // Token එක අවශ්‍ය නම් Header එකට එක් කරන්න
+            },
+            success: function(res) {
+                let rows = "";
+
+                // ඔබේ ApiResponse එකේ දත්ත එන්නේ res.data ලෙස නම්
+                if (res.data && res.data.length > 0) {
+                    res.data.forEach(app => {
+                        // Application එකේ තියෙන Task details සහ Status එක මෙතනදී ගන්නවා
+                        rows += `<tr>
+                        <td>${app.title}</td>
+                        <td>${app.appliedAt}</td>
+                        <td>
+                            <span class="badge ${getStatusColor(app.status)}">${app.status}</span>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-danger" onclick="cancelApplication(${app.id})">
+                                <i class="fas fa-times"></i> Cancel
+                            </button>
+                        </td>
+                    </tr>`;
+                    });
+                } else {
+                    rows = "<tr><td colspan='4' class='text-center'>You haven't applied for any tasks yet.</td></tr>";
+                }
+
+                $("#employeeTaskTableBody").html(rows); // HTML එකේ Table Body එකේ ID එක නිවැරදි කරන්න
+            },
+            error: function(xhr) {
+                console.error("Error loading applied tasks:", xhr.responseText);
+                if(xhr.status === 403) {
+                    alert("Session expired. Please login again.");
+                }
+            }
+        });
+    }
+
+    // Status එක අනුව Badge එකේ පාට වෙනස් කරන පොඩි function එකක්
+    function getStatusColor(status) {
+        switch (status) {
+            case 'PENDING': return 'bg-warning text-dark';
+            case 'ACCEPTED': return 'bg-success';
+            case 'REJECTED': return 'bg-danger';
+            default: return 'bg-secondary';
+        }
+    }
+
 </script>
 </body>
 </html>

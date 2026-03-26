@@ -28,7 +28,7 @@ public class UserService {
         }
 
         User user = User.builder()
-                .fullName(registerDTO.getFullName())
+                .full_name(registerDTO.getFullName())
                 .username(registerDTO.getUserName())
                 .password(passwordEncoder.encode(registerDTO.getPassword()))
                 .nic(registerDTO.getNic())
@@ -56,6 +56,6 @@ public class UserService {
         // user.getRole() Enum එකක් නම් .name() පාවිච්චි කරන්න, String එකක් නම් කෙලින්ම දෙන්න.
         String token = jwtUtil.generateToken(user.getUsername(), user.getRole().name());
 
-        return new AuthResponseDto(token, user.getId());
+        return new AuthResponseDto(token, user.getId(),user.getFull_name());
     }
 }

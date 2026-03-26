@@ -27,6 +27,8 @@ public class TaskApplication {
     @ManyToOne
     @JoinColumn(name = "employee_id")
     private User employee;
+    @Column(name = "full_Name")
+    private String fullName;
 
     @Enumerated(EnumType.STRING)
     private ApplicationStatus status = ApplicationStatus.PENDING;

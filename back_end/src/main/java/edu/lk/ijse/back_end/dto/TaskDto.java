@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class TaskDto {
     @NotNull
     private Long id;
+    private String fullName;
     @NotBlank()
     private String title;
     private double budget;

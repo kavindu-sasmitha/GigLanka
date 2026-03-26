@@ -14,7 +14,7 @@ public class TaskApplicationDto {
     private long task_id;       // Task Entity එකේ ID එක
 
     private long employee_id;   // User (Employee) Entity එකේ ID එක
-
+    private String fullName;
     private String status;// ApplicationStatus Enum එක String එකක් ලෙස (PENDING, ACCEPTED, etc.)
     private String title;
     private LocalDateTime appliedAt; // අයදුම් කළ වෙලාව

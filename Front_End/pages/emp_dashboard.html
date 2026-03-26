@@ -153,6 +153,8 @@
     function applyTask(taskId) {
         // Local Storage එකෙන් ලොග් වෙලා ඉන්න User ගේ ID එක ගන්න
         let loggedInUserId = localStorage.getItem("owner_id");
+        let fullName=localStorage.getItem("fullName");
+
         let token = localStorage.getItem("jwtToken");
 
         if (!loggedInUserId) {
@@ -167,6 +169,7 @@
             task_id: taskId,               // Function එකට argument එකක් විදියට එන ID එක
             employee_id: parseInt(loggedInUserId),
             status: "PENDING",
+            fullName:fullName,
             title:allTasks.title,
         };
 

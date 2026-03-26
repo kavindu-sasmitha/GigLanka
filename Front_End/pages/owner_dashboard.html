@@ -24,13 +24,13 @@
     .nav-link:hover, .nav-link.active { background: rgba(16, 185, 129, 0.1); color: #10b981 !important; }
     .table { color: white !important; }
     .modal-content { background: #1e293b; color: white; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; }
-    .profile-initial { width: 60px; height: 60px; background: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; margin-bottom: 15px; }
   </style>
 </head>
 <body>
 
 <div class="sidebar">
-  <h3 class="fw-bold mb-5" style="color: #10b981;">GigLanka</h3>
+  <h3 class="fw-bold mb-2" style="color: #10b981;">GigLanka</h3>
+  <p id="welcomeName" class="small mb-5 text-secondary"></p>
   <nav class="nav flex-column">
     <a class="nav-link active"><i class="fas fa-th-large me-2"></i> Dashboard</a>
     <a class="nav-link text-danger" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i> Logout</a>
@@ -119,16 +119,22 @@
   const map = L.map('map').setView([6.9271, 79.8612], 13);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
   let marker = L.marker([6.9271, 79.8612], { draggable: true }).addTo(map);
+  const token = localStorage.getItem('token');
 
   $(document).ready(() => {
     getAllTasksByUserId();
     loadApplications();
+
+    // නම Sidebar එකේ පෙන්වීම
+    let name = localStorage.getItem("full_name");
+    if(name) { $("#welcomeName").text("Welcome, " + name); }
   });
 
   function saveTask() {
     const position = marker.getLatLng();
     let taskData = {
       id: 0,
+      name: localStorage.getItem("full_name"), // DTO එකට නම එකතු කළා
       title: $("#taskTitle").val(),
       locationName: $("#district").val(),
       budget: parseFloat($("#budget").val()) || 0.0,
@@ -136,6 +142,7 @@
       longitude: position.lng,
       phoneNumber: $("#phone").val(),
       ownerId: parseInt(localStorage.getItem("owner_id")),
+      fullName: localStorage.getItem("full_name"),
       status: "PENDING"
     };
 
@@ -159,7 +166,6 @@
       let rows = "";
       if (res.data) {
         res.data.forEach(task => {
-          // Task object එක string එකක් ලෙස pass කිරීම (වැදගත්!)
           const taskStr = JSON.stringify(task).replace(/"/g, '&quot;');
           rows += `<tr>
             <td>${task.title}</td>
@@ -194,13 +200,14 @@
     const id = $("#editTaskId").val();
     const updateData = {
       id: parseInt(id),
+      name: localStorage.getItem("full_name"), // Update එකටත් නම එකතු කළා
       title: $("#editTitle").val(),
       budget: parseFloat($("#editBudget").val()) || 0.0,
       locationName: $("#editDistrict").val(),
       latitude: parseFloat($("#editLat").val()) || 0.0,
       longitude: parseFloat($("#editLng").val()) || 0.0,
       phoneNumber: $("#editPhone").val(),
-      status: "PENDING",
+      status: "UPDATED",
       ownerId: parseInt($("#editOwnerId").val())
     };
 
@@ -210,7 +217,7 @@
       contentType: 'application/json',
       data: JSON.stringify(updateData),
       success: () => {
-        alert("Updated!");
+        alert("Updated Successfully!");
         location.reload();
       },
       error: (xhr) => console.log(xhr.responseText)
@@ -219,8 +226,15 @@
 
   function deleteTask(id) {
     if(confirm("Delete task?")) {
-      $.ajax({ url: `http://localhost:8080/api/v1/task/${id}`, method: 'DELETE', success: () => getAllTasksByUserId() });
+      $.ajax({ url: `http://localhost:8080/api/v1/task/${id}`,
+        method: 'DELETE',
+        headers: {
+        "Authorization":"Bearer"+token
+        },
+
+        success: () => getAllTasksByUserId() });
     }
+
   }
 
   function loadApplications() {

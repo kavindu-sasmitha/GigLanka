@@ -18,11 +18,12 @@ public class Application {
 
     @ManyToOne
     @JoinColumn(name = "task_id")
-    private Task task; // මොන Task එකටද apply කරන්නේ?
+    private Task task; //apply karanne mona task ekada kiyala
+
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User employee; // Apply කරන්නේ මොන User ද? (මෙයාගේ Role එක EMPLOYEE විය යුතුයි)
+    private User employee; //applied karanne mona employed
 
     private String status; // PENDING, ACCEPTED, REJECTED
 

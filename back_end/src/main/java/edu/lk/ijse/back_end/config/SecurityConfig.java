@@ -36,11 +36,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-                // 1. CORS Configuration එක Security එකට සම්බන්ධ කිරීම
+
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/api/v1/auth/**").permitAll()
-                                // 2. දැනට Task API එකට Token එකක් නැතුව AJAX වලින් කතා කරන්න ඉඩ දීම
+
                                 .requestMatchers("/api/v1/task/**").permitAll()
                                 .anyRequest().authenticated())
                 .sessionManagement(
@@ -54,8 +54,7 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // 3. CORS Policy එක මෙතන Define කරනවා (Frontend Port එකට ඉඩ දීම)
-    // 3. CORS Policy එක මෙතන Define කරනවා (Postman සහ Frontend දෙකටම ඉඩ දීම)
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

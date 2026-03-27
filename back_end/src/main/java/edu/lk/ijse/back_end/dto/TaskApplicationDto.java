@@ -9,13 +9,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TaskApplicationDto {
-    private long id;            // Application ID එක (Auto-generated)
+    private long id;            // Application ID(Auto-generated)
 
-    private long task_id;       // Task Entity එකේ ID එක
+    private long task_id;       // Task Entity ID
 
-    private long employee_id;   // User (Employee) Entity එකේ ID එක
+    private long employee_id;   // User (Employee) Entity ID
     private String fullName;
-    private String status;// ApplicationStatus Enum එක String එකක් ලෙස (PENDING, ACCEPTED, etc.)
+    private String status;// ApplicationStatus Enum String (PENDING, ACCEPTED, etc.)
     private String title;
-    private LocalDateTime appliedAt; // අයදුම් කළ වෙලාව
+    private LocalDateTime appliedAt;
 }

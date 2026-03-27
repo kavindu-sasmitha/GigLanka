@@ -72,10 +72,10 @@ private final TaskApplicationService taskApplicationService;
     @GetMapping("/{owner_id}")
     public ResponseEntity<ApiResponse<List<TaskApplicationDto>>> getAllTasksByUserId(@PathVariable Long owner_id) {
 
-        // 1. Service එක හරහා අදාළ Owner/Employee ට අයිති Applications ටික ගන්නවා
+
         List<TaskApplicationDto> applicationList = taskApplicationService.getAllTasksByOwnerId(owner_id);
 
-        // 2. ApiResponse එක ඇතුළට applicationList එක දමා return කරනවා
+
         return new ResponseEntity<>(new ApiResponse<>(
                 200,
                 "Applications fetched successfully",

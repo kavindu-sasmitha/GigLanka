@@ -91,6 +91,7 @@
     const map = L.map('map').setView([6.9271, 79.8612], 10);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
     let markersLayer = L.layerGroup().addTo(map);
+    let token=localStorage.getItem('token');
 
     $(document).ready(function() {
         getAllTasksByUserId();
@@ -151,7 +152,7 @@
     }
 
     function applyTask(taskId) {
-        // Local Storage එකෙන් ලොග් වෙලා ඉන්න User ගේ ID එක ගන්න
+
         let loggedInUserId = localStorage.getItem("owner_id");
         let fullName=localStorage.getItem("fullName");
 
@@ -163,7 +164,7 @@
             return;
         }
 
-        // TaskApplicationDto එකට ගැලපෙන data ටික විතරක් මෙතනට දාන්න
+
         let applicationData = {
             id: 0,
             task_id: taskId,               // Function එකට argument එකක් විදියට එන ID එක
@@ -185,36 +186,62 @@
             data: JSON.stringify(applicationData),
             success: function (response) {
                 alert("Success: Applied for the task successfully!");
+                getAllTasksByUserId();
             },
             error: function (xhr) {
                 alert("Error: " + xhr.status);
             }
         });
     }
+    function deleteApplyTask(id) {
+        console.log("Attempting to delete Application ID:", id); // Check if ID is coming correctly
+
+        if(confirm("Are you sure you want to cancel this application?")) {
+            // Headers වලට ඕන කරන token එක මෙතනදී ගන්න
+            let token = localStorage.getItem("jwtToken");
+
+            $.ajax({
+                url: `http://localhost:8080/api/v1/application/${id}`,
+                method: 'DELETE',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                },
+                success: (res) => {
+                    alert("Application cancelled successfully!");
+                    getAllTasksByUserId(); // Table එක refresh කරනවා
+                },
+                error: (xhr) => {
+                    console.error("Delete Error Status:", xhr.status);
+                    if(xhr.status === 403) {
+                        alert("Forbidden: You don't have permission or token is invalid.");
+                    } else {
+                        alert("Error deleting application. Status: " + xhr.status);
+                    }
+                }
+            });
+        }
+    }
     function getAllTasksByUserId() {
-        let employeeId = localStorage.getItem("owner_id"); // මෙහි ඔබ store කර ඇත්තේ ලොග් වූ අයගේ ID එකයි
-        let token = localStorage.getItem("jwtToken"); // JWT Token එක අවශ්‍ය නම් මෙතනින් ගන්න
+        let employeeId = localStorage.getItem("owner_id");
+        let token = localStorage.getItem("jwtToken"); // මෙතන key එක හරියටම තියෙන්න ඕනේ
 
         if (!employeeId) {
             console.error("Employee ID not found!");
             return;
         }
 
-        // මෙහි URL එක ඔබේ Backend එකට අනුව වෙනස් විය හැකියි
-        // (උදා: /api/v1/application/employee/5)
         $.ajax({
             url: `http://localhost:8080/api/v1/application/${employeeId}`,
             method: 'GET',
             headers: {
-                'Authorization': 'Bearer ' + token // Token එක අවශ්‍ය නම් Header එකට එක් කරන්න
+                'Authorization': 'Bearer ' + token
             },
             success: function(res) {
                 let rows = "";
 
-                // ඔබේ ApiResponse එකේ දත්ත එන්නේ res.data ලෙස නම්
                 if (res.data && res.data.length > 0) {
                     res.data.forEach(app => {
-                        // Application එකේ තියෙන Task details සහ Status එක මෙතනදී ගන්නවා
+                        // මෙතන app.id කියන්නේ backend එකෙන් එන application record එකේ ID එක
                         rows += `<tr>
                         <td>${app.title}</td>
                         <td>${app.appliedAt}</td>
@@ -222,7 +249,7 @@
                             <span class="badge ${getStatusColor(app.status)}">${app.status}</span>
                         </td>
                         <td>
-                            <button class="btn btn-sm btn-danger" onclick="cancelApplication(${app.id})">
+                            <button class="btn btn-sm btn-danger" onclick="deleteApplyTask(${app.id})">
                                 <i class="fas fa-times"></i> Cancel
                             </button>
                         </td>
@@ -232,18 +259,15 @@
                     rows = "<tr><td colspan='4' class='text-center'>You haven't applied for any tasks yet.</td></tr>";
                 }
 
-                $("#employeeTaskTableBody").html(rows); // HTML එකේ Table Body එකේ ID එක නිවැරදි කරන්න
+                $("#employeeTaskTableBody").html(rows);
             },
             error: function(xhr) {
                 console.error("Error loading applied tasks:", xhr.responseText);
-                if(xhr.status === 403) {
-                    alert("Session expired. Please login again.");
-                }
             }
         });
     }
 
-    // Status එක අනුව Badge එකේ පාට වෙනස් කරන පොඩි function එකක්
+
     function getStatusColor(status) {
         switch (status) {
             case 'PENDING': return 'bg-warning text-dark';

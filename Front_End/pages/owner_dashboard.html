@@ -119,7 +119,9 @@
   const map = L.map('map').setView([6.9271, 79.8612], 13);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
   let marker = L.marker([6.9271, 79.8612], { draggable: true }).addTo(map);
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('jwtToken');
+  let ownerId = localStorage.getItem("owner_id");
+
 
   $(document).ready(() => {
     getAllTasksByUserId();
@@ -242,14 +244,46 @@
     }
 
   }
-
   function loadApplications() {
-    $.get("http://localhost:8080/api/v1/application/all", (res) => {
-      let rows = "";
-      res.forEach(app => {
-        rows += `<tr><td>ID: ${app.task_id}</td><td>Employee ${app.employee_id}</td><td>Action</td></tr>`;
-      });
-      $("#appTableBody").html(rows);
+
+
+    if (!ownerId || !token) {
+      console.error("Owner ID or Token missing!");
+      return;
+    }
+
+    $.ajax({
+      url: `http://localhost:8080/api/v1/application/${ownerId}`,
+      method: 'GET',
+      headers: {
+        // Bearer සහ jwt අතර SPACE එකක් අනිවාර්යයෙන්ම තියෙන්න ඕනේ
+        "Authorization": "Bearer " + token
+      },
+      success: function(res) {
+        let rows = "";
+
+        // Backend එකෙන් ApiResponse<List<TaskApplicationDto>> එකක් එන නිසා
+        // අපි res.data තමයි loop කරන්න ඕනේ
+        if (res && res.data) {
+          res.data.forEach(app => {
+            rows += `<tr>
+                        <td>ID: ${app.task_id}</td>
+                        <td>Employee ID: ${app.employee_id}</td>
+                        <td>
+                             <button class="btn btn-sm btn-success" onclick="changeStatus(${app.id}, 'ACCEPTED')">Accept</button>
+                             <button class="btn btn-sm btn-danger" onclick="changeStatus(${app.id}, 'REJECTED')">Reject</button>
+                        </td>
+                    </tr>`;
+          });
+        }
+        $("#appTableBody").html(rows);
+      },
+      error: function(xhr) {
+        console.error("Error Status: " + xhr.status);
+        if(xhr.status === 403) {
+          alert("Access Denied: Please check if your token is valid or expired.");
+        }
+      }
     });
   }
 

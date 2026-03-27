@@ -81,29 +81,30 @@ public class TaskApplicationServiceImpl implements TaskApplicationService {
     }
 
     @Override
-    public List<TaskApplicationDto> getAllTasksByOwnerId(long employeeId) {
-        // 1. Employee ට අදාළ සියලුම Task Applications ලබා ගැනීම
-        List<TaskApplication> applyTaskList = repository.findByEmployeeId(employeeId);
+    public List<TaskApplicationDto> getAllTasksByOwnerId(long ownerId) {
+        // 1. Owner ge tasks walata adalawa thiyena applications tika gannawa
+        List<TaskApplication> applyTaskList = repository.findByTaskOwnerId(ownerId);
 
-        // 2. Stream එක භාවිතා කර Map කිරීම
-        return applyTaskList.stream().map(
-                taskApplication -> {
-                    // ModelMapper මගින් base fields (id, status etc.) map කිරීම
-                    TaskApplicationDto dto = mapper.map(taskApplication, TaskApplicationDto.class);
+        return applyTaskList.stream().map(taskApplication -> {
+            TaskApplicationDto dto = new TaskApplicationDto();
 
-                    // Task ID එක manual සෙට් කිරීම
-                    if (taskApplication.getTask() != null) {
-                        dto.setTask_id(taskApplication.getTask().getId());
-                    }
+            // Database record eke ID eka (Meka thamai Cancel/Delete karanna ona ID eka)
+            dto.setId(taskApplication.getId());
+            dto.setStatus(taskApplication.getStatus().toString());
 
-                    // Employee ID එක manual සෙට් කිරීම
-                    if (taskApplication.getEmployee() != null) {
-                        dto.setEmployee_id(taskApplication.getEmployee().getId());
-                    }
+            // Task Details
+            if (taskApplication.getTask() != null) {
+                dto.setTask_id(taskApplication.getTask().getId());
+                dto.setTitle(taskApplication.getTask().getTitle()); // Task eke nam set karanna
+            }
 
-                    // අවසානයේ පිරිසැකසුම් කළ dto එක return කළ යුතුයි
-                    return dto;
-                }
-        ).collect(Collectors.toList());
+            // Employee (Apply karapu kenage) Details
+            if (taskApplication.getEmployee() != null) {
+                dto.setEmployee_id(taskApplication.getEmployee().getId());
+                 // Employee ge nama set karanna
+            }
+
+            return dto;
+        }).collect(Collectors.toList());
     }
 }

@@ -10,4 +10,6 @@ import java.util.List;
 public interface TaskApplicationRepo extends JpaRepository<TaskApplication, Long> {
     // යම් employee කෙනෙක් apply කළ සියලුම tasks සෙවීමට
     List<TaskApplication> findByEmployeeId(long employeeId);
+
+    List<TaskApplication> findByTaskOwnerId(long ownerId);
 }

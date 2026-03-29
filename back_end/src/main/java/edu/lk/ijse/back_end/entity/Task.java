@@ -21,6 +21,7 @@ public class Task {
     private double budget;
     private String district; // New: For Local Proximity
     private double latitude;
+    private double phoneNumber;
     private double longitude;
 
     @Enumerated(EnumType.STRING)
@@ -30,7 +31,7 @@ public class Task {
     @JoinColumn(name = "owner_id")
     private User owner;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "accepted_employee_id")
     private User acceptedEmployee; // New: Flash Match result
 

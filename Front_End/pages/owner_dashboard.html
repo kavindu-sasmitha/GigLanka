@@ -39,11 +39,39 @@
         <form id="taskForm">
           <div class="row g-3">
             <div class="col-12"><input type="text" id="taskTitle" class="form-control" placeholder="Task Title"></div>
+            <div class="col-12">
+              <input type="tel" id="contactNo" class="form-control" placeholder="Contact Phone Number (e.g. 0771234567)">
+            </div>
+
             <div class="col-md-6">
-              <select id="district" class="form-select">
+              <label for="district" class="form-label text-white-50 small">Select District</label>
+              <select id="district" class="form-select bg-dark text-white border-secondary">
+                <option value="" selected disabled>Choose District...</option>
+                <option value="Ampara">Ampara</option>
+                <option value="Anuradhapura">Anuradhapura</option>
+                <option value="Badulla">Badulla</option>
+                <option value="Batticaloa">Batticaloa</option>
                 <option value="Colombo">Colombo</option>
                 <option value="Galle">Galle</option>
+                <option value="Gampaha">Gampaha</option>
+                <option value="Hambantota">Hambantota</option>
+                <option value="Jaffna">Jaffna</option>
+                <option value="Kalutara">Kalutara</option>
                 <option value="Kandy">Kandy</option>
+                <option value="Kegalle">Kegalle</option>
+                <option value="Kilinochchi">Kilinochchi</option>
+                <option value="Kurunegala">Kurunegala</option>
+                <option value="Mannar">Mannar</option>
+                <option value="Matale">Matale</option>
+                <option value="Matara">Matara</option>
+                <option value="Moneragala">Moneragala</option>
+                <option value="Mullaitivu">Mullaitivu</option>
+                <option value="Nuwara Eliya">Nuwara Eliya</option>
+                <option value="Polonnaruwa">Polonnaruwa</option>
+                <option value="Puttalam">Puttalam</option>
+                <option value="Ratnapura">Ratnapura</option>
+                <option value="Trincomalee">Trincomalee</option>
+                <option value="Vavuniya">Vavuniya</option>
               </select>
             </div>
             <div class="col-md-6"><input type="number" id="budget" class="form-control" placeholder="Budget LKR"></div>
@@ -119,6 +147,7 @@
       budget: parseFloat($("#budget").val()),
       latitude: pos.lat, longitude: pos.lng,
       ownerId: parseInt(ownerId),
+      phoneNumber: $("#contactNo").val(),
       status: "PENDING"
     };
     $.ajax({
@@ -170,20 +199,26 @@
       headers: { "Authorization": "Bearer " + token },
       success: function(res) {
         let rows = "";
-        if (res && res.data) {
-          res.data.forEach(app => {
-            rows += `<tr>
-                        <td> ${app.title}</td>
-                        <td>Employee ID: ${app.employee_id}</td>
+        const data = res.data || res; // Backend එකෙන් එන විදිහ අනුව handle කරන්න
 
+        if (data && data.length > 0) {
+          data.forEach(app => {
+            // මෙන්න මෙතනදී PENDING ඒව විතරක් පෙන්වන්න filter එකක් දාන්න
+            if (app.status === 'PENDING') {
+              rows += `<tr>
+                        <td>${app.title}</td>
+                        <td>Employee ID: ${app.employee_id}</td>
                         <td>
-                             <button class="btn btn-sm btn-success" onclick="changeStatus(${app.id}, 'ACCEPTED', ${app.task_id}, ${app.employee_id})">Accept</button>
+                             <button class="btn btn-sm btn-success me-1" onclick="changeStatus(${app.id}, 'ACCEPTED', ${app.task_id}, ${app.employee_id})">Accept</button>
                              <button class="btn btn-sm btn-danger" onclick="changeStatus(${app.id}, 'REJECTED', ${app.task_id}, ${app.employee_id})">Reject</button>
                         </td>
                     </tr>`;
+            }
           });
         }
-        $("#appTableBody").html(rows || "<tr><td colspan='3' class='text-center'>No applications found.</td></tr>");
+
+        // Rows මොකුත් හැදුනේ නැත්නම් (හිස් නම්) මේ message එක පෙන්වනවා
+        $("#appTableBody").html(rows || "<tr><td colspan='3' class='text-center text-muted'>No pending applications found.</td></tr>");
       }
     });
   }
@@ -204,28 +239,26 @@
 
   function loadTransactionHistory() {
     $.ajax({
-      url: `http://localhost:8080/api/v1/transaction/user/${ownerId}`,
+      url: `http://localhost:8080/api/v1/transactions`, // The new endpoint we created
       method: 'GET',
       headers: { 'Authorization': 'Bearer ' + token },
-      success: function(res) {
-        let rows = "";
-        if (res.data && res.data.length > 0) {
-          res.data.forEach(trx => {
-            rows += `<tr>
-                <td>${new Date(trx.timestamp).toLocaleDateString()}</td>
-                <td>${trx.taskTitle || 'GigLanka'}</td>
-                <td class="text-danger fw-bold">- LKR ${trx.amount.toFixed(2)}</td>
-                <td><span class="text-success small"><i class="fas fa-check"></i> Paid</span></td>
-            </tr>`;
-          });
-        } else {
-          rows = "<tr><td colspan='4' class='text-center text-muted'>No history found.</td></tr>";
-        }
-        $("#transactionTableBody").html(rows);
+      success: (data) => {
+        // Logic to populate your table/UI
+        $('#transactionTableBody').empty();
+        data.forEach(tx => {
+          $('#transactionTableBody').append(`
+                    <tr>
+                        <td>${tx.taskId}</td>
+                        <td>Rs. ${tx.totalBudget}</td>
+                        <td class="text-danger">Rs. ${tx.systemFee}</td>
+                        <td class="text-success">Rs. ${tx.studentEarned}</td>
+                        <td>${new Date(tx.timestamp).toLocaleString()}</td>
+                    </tr>
+                `);
+        });
       }
     });
   }
-
   function deleteTask(id) {
     if(confirm("Delete this task?")) {
       $.ajax({ url: `http://localhost:8080/api/v1/task/${id}`, method: 'DELETE', headers: { 'Authorization': 'Bearer ' + token }, success: () => getAllTasksByUserId() });
@@ -260,6 +293,7 @@
           });
         } else {
           alert("Application Rejected!");
+          loadApplications();
           loadApplications();
         }
       },

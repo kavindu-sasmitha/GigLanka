@@ -71,4 +71,9 @@ public class TaskController {
                 200, "Payment processed and Task completed successfully", null
         ), HttpStatus.OK);
     }
+    @GetMapping("/completed/{employeeId}")
+    public ResponseEntity<List<TaskDto>> getCompletedTasks(@PathVariable long employeeId) {
+        List<TaskDto> completedTasks = taskService.getCompletedTasksByEmployee(employeeId);
+        return ResponseEntity.ok(completedTasks);
+    }
 }

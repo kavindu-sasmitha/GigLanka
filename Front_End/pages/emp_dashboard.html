@@ -28,31 +28,46 @@
     <h3 class="fw-bold mb-5" style="color: #10b981;">GigLanka</h3>
     <nav class="nav flex-column">
         <a class="nav-link active"><i class="fas fa-search me-2"></i> Browse Tasks</a>
-        <a class="nav-link"><i class="fas fa-briefcase me-2"></i> My Applications</a>
+        <a class="nav-link" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#completedTasksModal" onclick="loadCompletedTasks()">
+            <i class="fas fa-briefcase me-2"></i> My Applications
+        </a>
         <div class="mt-5"><a class="nav-link text-danger" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></div>
     </nav>
 </div>
 
 <div class="main-content">
-    <div class="row mb-4">
-        <div class="col-md-4">
-            <div class="glass-card text-center" style="border-left: 5px solid #10b981;">
-                <p class="text-muted small mb-1">My Earnings (98% Share)</p>
-                <h3 id="walletBalance" class="fw-bold text-success">LKR 0.00</h3>
-            </div>
-        </div>
-    </div>
-
     <div class="row">
         <div class="col-lg-8">
             <div class="glass-card">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h5><i class="fas fa-map-marked-alt text-success me-2"></i> Explore Tasks</h5>
-                    <select id="districtFilter" class="form-select w-50" onchange="filterTasks()">
-                        <option value="All">All Districts</option>
+                    <select id="districtFilter" class="form-select w-50" onchange="filterTasks()" style="background: #1e293b; color: white; border: 1px solid #334155;">
+                        <option value="All">All Districts (Sri Lanka)</option>
+                        <option value="Ampara">Ampara</option>
+                        <option value="Anuradhapura">Anuradhapura</option>
+                        <option value="Badulla">Badulla</option>
+                        <option value="Batticaloa">Batticaloa</option>
                         <option value="Colombo">Colombo</option>
                         <option value="Galle">Galle</option>
+                        <option value="Gampaha">Gampaha</option>
+                        <option value="Hambantota">Hambantota</option>
+                        <option value="Jaffna">Jaffna</option>
+                        <option value="Kalutara">Kalutara</option>
                         <option value="Kandy">Kandy</option>
+                        <option value="Kegalle">Kegalle</option>
+                        <option value="Kilinochchi">Kilinochchi</option>
+                        <option value="Kurunegala">Kurunegala</option>
+                        <option value="Mannar">Mannar</option>
+                        <option value="Matale">Matale</option>
+                        <option value="Matara">Matara</option>
+                        <option value="Moneragala">Moneragala</option>
+                        <option value="Mullaitivu">Mullaitivu</option>
+                        <option value="Nuwara Eliya">Nuwara Eliya</option>
+                        <option value="Polonnaruwa">Polonnaruwa</option>
+                        <option value="Puttalam">Puttalam</option>
+                        <option value="Ratnapura">Ratnapura</option>
+                        <option value="Trincomalee">Trincomalee</option>
+                        <option value="Vavuniya">Vavuniya</option>
                     </select>
                 </div>
                 <div id="map"></div>
@@ -62,17 +77,47 @@
 
         <div class="col-lg-4">
             <div class="glass-card">
-                <h6>My Applications</h6>
+                <h6><i class="fas fa-list-ul text-success me-2"></i> My Applications</h6>
                 <table class="table table-hover table-dark mt-3" style="font-size: 13px;">
-                    <thead><tr><th>Task</th><th>Status</th><th>Action</th></tr></thead>
-                    <tbody id="employeeTaskTableBody"></tbody>
+                    <thead>
+                    <tr>
+                        <th>Task</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody id="employeeTaskTableBody">
+                    </tbody>
                 </table>
             </div>
         </div>
     </div>
 </div>
 
+<div class="modal fade" id="completedTasksModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content" style="background: #1e293b; color: white; border: 1px solid rgba(255, 255, 255, 0.1);">
+            <div class="modal-header" style="border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                <h5 class="modal-title" id="modalLabel"><i class="fas fa-check-circle text-success me-2"></i> My Completed Tasks</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover">
+                        <thead>
+                        <tr><th>Task Title</th><th>Status</th></tr>
+                        </thead>
+                        <tbody id="completedTaskTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
     let allTasks = [];
@@ -87,16 +132,22 @@
     $(document).ready(function() {
         if (!token) { window.location.href = "login.html"; return; }
         fetchWalletBalance();
-        getAllTasksByUserId(); // තමන් ඉල්ලුම් කළ වැඩ ලෝඩ් කිරීම
-        fetchAllTasks();       // සියලුම වැඩ ලෝඩ් කිරීම
+        getAllTasksByUserId();
+        fetchAllTasks();
     });
 
     function fetchWalletBalance() {
         $.ajax({
-            url: `http://localhost:8080/api/v1/user/profile/${employeeId}`,
+            url: `http://localhost:8080/api/v1/transactions`,
             method: 'GET',
             headers: { 'Authorization': 'Bearer ' + token },
-            success: (user) => $("#walletBalance").text(`LKR ${user.walletBalance.toFixed(2)}`)
+            success: (transactions) => {
+                let totalBalance = 0;
+                transactions.forEach(tx => {
+                    totalBalance += tx.studentEarned;
+                });
+                $("#walletBalance").text(`LKR ${totalBalance.toFixed(2)}`);
+            }
         });
     }
 
@@ -106,10 +157,7 @@
             method: 'GET',
             headers: { 'Authorization': 'Bearer ' + token },
             success: function(res) {
-                // Backend එකෙන් එන්නේ List එකක් නම් කෙලින්ම data, ApiResponse එකක් නම් res.data
                 allTasks = res.data || res;
-                const userDist = localStorage.getItem('district') || "All";
-                $("#districtFilter").val(userDist);
                 filterTasks();
             }
         });
@@ -119,15 +167,10 @@
         const selectedDist = $("#districtFilter").val();
         markersLayer.clearLayers();
         $("#taskList").empty();
-
         const filtered = allTasks.filter(t => (selectedDist === "All" || t.locationName === selectedDist) && t.status === "PENDING");
-
         filtered.forEach(task => {
             const marker = L.marker([task.latitude, task.longitude]).addTo(markersLayer);
-            const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${task.latitude},${task.longitude}`;
-
             marker.bindPopup(`<div style="color:black"><strong>${task.title}</strong><br>LKR ${task.budget}</div>`);
-
             $("#taskList").append(`
                 <div class="task-card">
                     <div class="d-flex justify-content-between align-items-center">
@@ -145,14 +188,7 @@
     }
 
     function applyTask(taskId) {
-        let applicationData = {
-            id: 0,
-            task_id: taskId,
-            employee_id: parseInt(employeeId),
-            full_name:employeeName,
-            status: "PENDING"
-        };
-
+        let applicationData = { id: 0, task_id: taskId, employee_id: parseInt(employeeId), full_name:employeeName, status: "PENDING" };
         $.ajax({
             url: 'http://localhost:8080/api/v1/application',
             method: 'POST',
@@ -175,15 +211,15 @@
             success: function(res) {
                 let rows = "";
                 const data = res.data || res;
-
                 if (data && data.length > 0) {
                     data.forEach(app => {
                         let directionBtn = "";
                         if (app.status === 'ACCEPTED' || app.status === 'ONGOING') {
-                            const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${app.latitude || 6.9271},${app.longitude || 79.8612}`;
+                            const lat = app.latitude || 6.9271;
+                            const lng = app.longitude || 79.8612;
+                            const googleMapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
                             directionBtn = `<a href="${googleMapsUrl}" target="_blank" class="btn btn-sm btn-info text-white me-1"><i class="fas fa-location-arrow"></i></a>`;
                         }
-
                         rows += `<tr>
                             <td><small>${app.title || 'Task'}</small></td>
                             <td><span class="badge ${getStatusColor(app.status)}">${app.status}</span></td>
@@ -196,7 +232,7 @@
                         </tr>`;
                     });
                 } else {
-                    rows = "<tr><td colspan='3' class='text-center text-muted small'>No applications.</td></tr>";
+                    rows = "<tr><td colspan='3' class='text-center text-muted small'>No applications found.</td></tr>";
                 }
                 $("#employeeTaskTableBody").html(rows);
             }
@@ -212,6 +248,28 @@
                 success: () => { alert("Cancelled!"); getAllTasksByUserId(); }
             });
         }
+    }
+
+    function loadCompletedTasks() {
+        $.ajax({
+            url: `http://localhost:8080/api/v1/task/completed/${employeeId}`,
+            method: 'GET',
+            headers: { 'Authorization': 'Bearer ' + token },
+            success: (tasks) => {
+                let rows = "";
+                if (tasks && tasks.length > 0) {
+                    tasks.forEach(task => {
+                        rows += `<tr>
+                                <td>${task.title}</td>
+                                <td><span class="badge bg-success">${task.status}</span></td>
+                             </tr>`;
+                    });
+                } else {
+                    rows = "<tr><td colspan='2' class='text-center'>No completed tasks yet.</td></tr>";
+                }
+                $("#completedTaskTableBody").html(rows);
+            }
+        });
     }
 
     function getStatusColor(status) {

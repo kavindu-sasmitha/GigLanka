@@ -143,6 +143,13 @@ public class TaskServiceImpl implements TaskService {
                 .stream().map(t -> modelMapper.map(t, TaskDto.class))
                 .collect(Collectors.toList());
     }
+    @Override
+    public List<TaskDto> getCompletedTasksByEmployee(long employeeId) {
+        List<Task> tasks = taskRepo.findByAcceptedEmployeeIdAndStatus(employeeId, TaskStatus.COMPLETED);
+        return tasks.stream()
+                .map(task -> modelMapper.map(task, TaskDto.class))
+                .collect(Collectors.toList());
+    }
 
 
 }

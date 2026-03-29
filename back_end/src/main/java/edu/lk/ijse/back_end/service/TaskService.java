@@ -14,5 +14,5 @@ public interface TaskService {
     void flashMatch(long taskId, long employeeId); // Flash Match Feature
     void completeTask(long taskId); // Revenue & Escrow Logic
     List<TaskDto> getTasksByDistrict(String district); // Local Alerts
-
+    List<TaskDto> getCompletedTasksByEmployee(long employeeId);
 }

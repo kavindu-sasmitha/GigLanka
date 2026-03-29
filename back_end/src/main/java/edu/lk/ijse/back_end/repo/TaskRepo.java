@@ -12,7 +12,7 @@ import java.util.List;
 public interface TaskRepo extends JpaRepository<Task, Long> {
     // 1. Hyper-Local: එකම දිස්ත්‍රික්කයේ පවතින වැඩ පමණක් සෙවීමට
     List<Task> findByDistrictAndStatus(String district, TaskStatus status);
-
+    List<Task> findByAcceptedEmployeeIdAndStatus(long employeeId, TaskStatus status);
 
     List<Task> getTasksByOwnerId(Long ownerId);
 }

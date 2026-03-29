@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TransactionRepo extends JpaRepository<Transaction, Long> {
-    // අවශ්‍ය නම් අමතර Query මෙතන ලිවිය හැකියි
+
 }

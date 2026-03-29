@@ -16,11 +16,10 @@ public class TaskDto {
     @NotBlank()
     private String title;
     private double budget;
-
-    private String locationName;
     private double latitude;
     private double longitude;
     private String phoneNumber;
+    private String district;
 
     private String status;
     private Long ownerId;

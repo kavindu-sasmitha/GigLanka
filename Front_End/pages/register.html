@@ -70,6 +70,25 @@
       <label>NIC Number</label>
       <input type="text" id="nic" placeholder="2001XXXXXXXX" required>
     </div>
+
+    <div class="input-group">
+      <label>District</label>
+      <select id="district" required>
+        <option value="" disabled selected>Select District</option>
+        <option value="Colombo">Colombo</option>
+        <option value="Gampaha">Gampaha</option>
+        <option value="Kalutara">Kalutara</option>
+        <option value="Kandy">Kandy</option>
+        <option value="Galle">Galle</option>
+        <option value="Matara">Matara</option>
+        <option value="Jaffna">Jaffna</option>
+        <option value="Kurunegala">Kurunegala</option>
+        <option value="Anuradhapura">Anuradhapura</option>
+        <option value="Ratnapura">Ratnapura</option>
+        <option value="Badulla">Badulla</option>
+      </select>
+    </div>
+
     <div class="input-group">
       <label>User Role</label>
       <select id="role" required>
@@ -99,6 +118,7 @@
     let fullName = $('#fullName').val();
     let email = $('#email').val();
     let nic = $('#nic').val();
+    let district = $('#district').val(); // District එක ලබා ගැනීම
     let role = $('#role').val();
     let password = $('#password').val();
 
@@ -110,12 +130,14 @@
         fullName: fullName,
         userName: email,
         nic: nic,
+        district: district, // Backend එකට යවන දත්ත වලට එකතු කළා
         role: role,
         password: password
       }),
       success: function(response) {
-        if (response.code === 200) {
-          alert(response.message);
+        // Backend එකෙන් සාමාන්‍යයෙන් 201 එන්නේ සාර්ථක වුණාමයි
+        if (response.code === 200 || response.code === 201) {
+          alert("Registration Successful!");
           window.location.href = "login.html";
         } else {
           alert("Registration Failed: " + response.message);
@@ -123,7 +145,7 @@
       },
       error: function(xhr) {
         console.error("Status:", xhr.status);
-        alert("Error " + xhr.status + ": Could not connect to server.");
+        alert("Error " + xhr.status + ": Registration failed. Check if NIC/Email already exists.");
       }
     });
   }

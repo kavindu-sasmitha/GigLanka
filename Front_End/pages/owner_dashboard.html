@@ -4,26 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GigLanka | Owner Dashboard</title>
-
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-
   <style>
     body { margin: 0; font-family: 'Inter', sans-serif; background: #0f172a; color: white; min-height: 100vh; }
     .sidebar { height: 100vh; background: rgba(30, 41, 59, 0.5); backdrop-filter: blur(10px); border-right: 1px solid rgba(255, 255, 255, 0.1); position: fixed; width: 260px; padding: 30px 20px; }
     .main-content { margin-left: 260px; padding: 40px; }
     .glass-card { background: rgba(30, 41, 59, 0.7); padding: 25px; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); margin-bottom: 25px; }
     #map { height: 300px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #334155; filter: grayscale(0.5) invert(0.9) hue-rotate(180deg); }
-    label { font-size: 13px; color: #94a3b8; margin-bottom: 8px; display: block; }
-    input, select { background: #1e293b !important; border: 1px solid #334155 !important; color: white !important; border-radius: 8px !important; padding: 10px !important; }
-    .btn-publish { background: #10b981; border: none; border-radius: 8px; padding: 12px; font-weight: 600; transition: 0.3s; color: white; }
-    .btn-publish:hover { background: #059669; }
-    .nav-link { color: #94a3b8 !important; padding: 12px 15px; border-radius: 10px; margin-bottom: 10px; transition: 0.3s; cursor: pointer; text-decoration: none; display: block; }
-    .nav-link:hover, .nav-link.active { background: rgba(16, 185, 129, 0.1); color: #10b981 !important; }
-    .table { color: white !important; }
-    .modal-content { background: #1e293b; color: white; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; }
+    input, select { background: #1e293b !important; border: 1px solid #334155 !important; color: white !important; border-radius: 8px !important; }
+    .btn-publish { background: #10b981; border: none; border-radius: 8px; padding: 12px; font-weight: 600; color: white; }
+    .table-dark { --bs-table-bg: transparent; border-color: rgba(255,255,255,0.1); }
   </style>
 </head>
 <body>
@@ -32,8 +25,8 @@
   <h3 class="fw-bold mb-2" style="color: #10b981;">GigLanka</h3>
   <p id="welcomeName" class="small mb-5 text-secondary"></p>
   <nav class="nav flex-column">
-    <a class="nav-link active"><i class="fas fa-th-large me-2"></i> Dashboard</a>
-    <a class="nav-link text-danger" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i> Logout</a>
+    <a class="nav-link active" style="color: #10b981;"><i class="fas fa-th-large me-2"></i> Dashboard</a>
+    <a class="nav-link text-danger mt-5" onclick="logout()" style="cursor: pointer;"><i class="fas fa-sign-out-alt me-2"></i> Logout</a>
   </nav>
 </div>
 
@@ -41,249 +34,236 @@
   <div class="row">
     <div class="col-lg-7">
       <div class="glass-card">
-        <h5 class="mb-4"><i class="fas fa-rocket text-success me-2"></i> Post a New Task</h5>
+        <h5><i class="fas fa-rocket text-success me-2"></i> Post a New Task</h5>
         <div id="map"></div>
         <form id="taskForm">
           <div class="row g-3">
-            <div class="col-12"><label>Task Title</label><input type="text" id="taskTitle" class="form-control" placeholder="Task Title"></div>
-            <div class="col-md-6"><label>District</label><select id="district" class="form-select"><option value="Colombo">Colombo</option><option value="Galle">Galle</option><option value="Kandy">Kandy</option></select></div>
-            <div class="col-md-6"><label>Budget (LKR)</label><input type="number" id="budget" class="form-control"></div>
-            <div class="col-md-12"><label>Phone</label><input type="text" id="phone" class="form-control"></div>
-            <div class="col-12 mt-4"><button type="button" class="btn btn-publish w-100" onclick="saveTask()">Publish Task</button></div>
+            <div class="col-12"><input type="text" id="taskTitle" class="form-control" placeholder="Task Title"></div>
+            <div class="col-md-6">
+              <select id="district" class="form-select">
+                <option value="Colombo">Colombo</option>
+                <option value="Galle">Galle</option>
+                <option value="Kandy">Kandy</option>
+              </select>
+            </div>
+            <div class="col-md-6"><input type="number" id="budget" class="form-control" placeholder="Budget LKR"></div>
+            <div class="col-12"><button type="button" class="btn btn-publish w-100" onclick="saveTask()">Publish Task</button></div>
           </div>
         </form>
       </div>
 
       <div class="glass-card">
-        <h5 class="mb-4"><i class="fas fa-list text-warning me-2"></i> My Posted Tasks</h5>
-        <div class="table-responsive">
-          <table class="table table-dark table-hover">
-            <thead><tr><th>Title</th><th>Budget</th><th>Status</th><th>Actions</th></tr></thead>
-            <tbody id="myTaskTableBody"></tbody>
-          </table>
-        </div>
+        <h6>My Posted Tasks</h6>
+        <table class="table table-dark table-hover mt-3">
+          <thead><tr><th>Title</th><th>Budget</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="myTaskTableBody"></tbody>
+        </table>
       </div>
     </div>
 
     <div class="col-lg-5">
       <div class="glass-card">
-        <h5 class="mb-4"><i class="fas fa-user-tie text-info me-2"></i> Recent Applications</h5>
+        <h5 class="text-info mb-4"><i class="fas fa-check-double me-2"></i> Release Payments</h5>
+        <div id="ongoingTaskArea">
+          <p class="small text-muted">Tasks accepted via Flash Match will appear here for payment release.</p>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <h5 class="text-warning mb-4"><i class="fas fa-history me-2"></i> Transaction History</h5>
         <div class="table-responsive">
-          <table class="table table-dark table-hover" style="font-size: 13px;">
-            <thead><tr><th>Task</th><th>Employee</th><th>Action</th></tr></thead>
-            <tbody id="appTableBody"></tbody>
+          <table class="table table-dark table-hover" style="font-size: 12px;">
+            <thead>
+            <tr><th>Date</th><th>Task</th><th>Amount</th><th>Status</th></tr>
+            </thead>
+            <tbody id="transactionTableBody"></tbody>
           </table>
         </div>
       </div>
-    </div>
-  </div>
-</div>
 
-<div class="modal fade" id="editTaskModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header border-0"><h5 class="modal-title">Edit Task</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
-      <div class="modal-body">
-        <input type="hidden" id="editTaskId">
-        <input type="hidden" id="editLat">
-        <input type="hidden" id="editLng">
-        <input type="hidden" id="editOwnerId">
-
-        <div class="mb-3"><label>Title</label><input type="text" id="editTitle" class="form-control"></div>
-        <div class="row">
-          <div class="col-md-6 mb-3">
-            <label>District</label>
-            <select id="editDistrict" class="form-select">
-              <option value="Colombo">Colombo</option>
-              <option value="Galle">Galle</option>
-              <option value="Kandy">Kandy</option>
-            </select>
-          </div>
-          <div class="col-md-6 mb-3"><label>Budget</label><input type="number" id="editBudget" class="form-control"></div>
-        </div>
-        <div class="mb-3"><label>Phone Number</label><input type="text" id="editPhone" class="form-control"></div>
-      </div>
-      <div class="modal-footer border-0">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-success" onclick="updateTask()">Save Changes</button>
+      <div class="glass-card">
+        <h6>Incoming Applications</h6>
+        <table class="table table-dark table-hover" style="font-size: 13px;">
+          <thead><tr><th>Task Info</th><th>Emp ID</th><th>Action</th></tr></thead>
+          <tbody id="appTableBody"></tbody>
+        </table>
       </div>
     </div>
   </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
 <script>
   const map = L.map('map').setView([6.9271, 79.8612], 13);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
   let marker = L.marker([6.9271, 79.8612], { draggable: true }).addTo(map);
-  const token = localStorage.getItem('jwtToken');
-  let ownerId = localStorage.getItem("owner_id");
 
+  const token = localStorage.getItem('jwtToken');
+  const ownerId = localStorage.getItem('owner_id');
 
   $(document).ready(() => {
+    if (!token) { window.location.href = "login.html"; return; }
     getAllTasksByUserId();
     loadApplications();
-
-    // නම Sidebar එකේ පෙන්වීම
-    let name = localStorage.getItem("full_name");
-    if(name) { $("#welcomeName").text("Welcome, " + name); }
+    loadTransactionHistory();
+    $("#welcomeName").text("Welcome, " + (localStorage.getItem("fullName") || "Owner"));
   });
 
   function saveTask() {
-    const position = marker.getLatLng();
-    let taskData = {
+    const pos = marker.getLatLng();
+    const data = {
       id: 0,
-      name: localStorage.getItem("full_name"), // DTO එකට නම එකතු කළා
       title: $("#taskTitle").val(),
-      locationName: $("#district").val(),
-      budget: parseFloat($("#budget").val()) || 0.0,
-      latitude: position.lat,
-      longitude: position.lng,
-      phoneNumber: $("#phone").val(),
-      ownerId: parseInt(localStorage.getItem("owner_id")),
-      fullName: localStorage.getItem("full_name"),
+      district: $("#district").val(),
+      budget: parseFloat($("#budget").val()),
+      latitude: pos.lat, longitude: pos.lng,
+      ownerId: parseInt(ownerId),
       status: "PENDING"
     };
-
     $.ajax({
       url: 'http://localhost:8080/api/v1/task',
       method: 'POST',
-      headers: {
-        "Authorization":"Bearer"+token
-      },
+      headers: { 'Authorization': 'Bearer ' + token },
       contentType: 'application/json',
-      data: JSON.stringify(taskData),
+      data: JSON.stringify(data),
       success: () => {
-        alert("Success: Task Published!");
-        $("#taskForm")[0].reset();
+        alert("Published Successfully!");
         getAllTasksByUserId();
-      },
-      error: (xhr) => alert("Error: " + xhr.status)
+        $("#taskForm")[0].reset();
+      }
     });
   }
 
   function getAllTasksByUserId() {
-    let ownerId = localStorage.getItem("owner_id");
-    $.get(`http://localhost:8080/api/v1/task/${ownerId}`, (res) => {
-      let rows = "";
-      if (res.data) {
-        res.data.forEach(task => {
-          const taskStr = JSON.stringify(task).replace(/"/g, '&quot;');
-          rows += `<tr>
-            <td>${task.title}</td>
-            <td>${task.budget}</td>
-            <td><span class="badge bg-primary">${task.status}</span></td>
-            <td>
-              <button class="btn btn-sm btn-info me-1" onclick="openEditModal('${taskStr}')"><i class="fas fa-edit"></i></button>
-              <button class="btn btn-sm btn-danger" onclick="deleteTask(${task.id})"><i class="fas fa-trash"></i></button>
-            </td>
-          </tr>`;
-        });
-      }
-      $("#myTaskTableBody").html(rows);
-    });
-  }
-
-  function openEditModal(taskJson) {
-    const task = JSON.parse(taskJson);
-    $("#editTaskId").val(task.id);
-    $("#editTitle").val(task.title);
-    $("#editBudget").val(task.budget);
-    $("#editDistrict").val(task.locationName);
-    $("#editPhone").val(task.phoneNumber);
-    $("#editLat").val(task.latitude);
-    $("#editLng").val(task.longitude);
-    $("#editOwnerId").val(task.ownerId);
-
-    new bootstrap.Modal($('#editTaskModal')).show();
-  }
-
-  function updateTask() {
-    const id = $("#editTaskId").val();
-    const updateData = {
-      id: parseInt(id),
-      name: localStorage.getItem("full_name"), // Update එකටත් නම එකතු කළා
-      title: $("#editTitle").val(),
-      budget: parseFloat($("#editBudget").val()) || 0.0,
-      locationName: $("#editDistrict").val(),
-      latitude: parseFloat($("#editLat").val()) || 0.0,
-      longitude: parseFloat($("#editLng").val()) || 0.0,
-      phoneNumber: $("#editPhone").val(),
-      status: "UPDATED",
-      ownerId: parseInt($("#editOwnerId").val())
-    };
-
     $.ajax({
-      url: `http://localhost:8080/api/v1/task/${id}`,
-      method: 'PUT',
-      headers: {
-        "Authorization":"Bearer"+token
-      },
-      contentType: 'application/json',
-      data: JSON.stringify(updateData),
-      success: () => {
-        alert("Updated Successfully!");
-        location.reload();
-      },
-      error: (xhr) => console.log(xhr.responseText)
+      url: `http://localhost:8080/api/v1/task/${ownerId}`,
+      method: 'GET',
+      headers: { 'Authorization': 'Bearer ' + token },
+      success: (res) => {
+        let rows = "";
+        let ongoingHtml = "";
+        res.data.forEach(task => {
+          rows += `<tr><td>${task.title}</td><td>LKR ${task.budget}</td><td><span class="badge bg-secondary">${task.status}</span></td><td><button class="btn btn-sm btn-danger" onclick="deleteTask(${task.id})"><i class="fas fa-trash"></i></button></td></tr>`;
+
+          if(task.status === "ONGOING") {
+            ongoingHtml += `<div class="p-3 mb-2 border rounded" style="background: #1e293b; border-color: #3b82f6 !important;">
+                          <div class="d-flex justify-content-between align-items-center">
+                              <span>${task.title} <br><small class="text-muted">Budget: LKR ${task.budget}</small></span>
+                              <button class="btn btn-sm btn-success" onclick="completeAndPay(${task.id})">Release 98%</button>
+                          </div>
+                      </div>`;
+          }
+        });
+        $("#myTaskTableBody").html(rows);
+        $("#ongoingTaskArea").html(ongoingHtml || "<p class='small text-muted text-center'>No ongoing tasks found.</p>");
+      }
     });
   }
 
-  function deleteTask(id) {
-    if(confirm("Delete task?")) {
-      $.ajax({ url: `http://localhost:8080/api/v1/task/${id}`,
-        method: 'DELETE',
-        headers: {
-        "Authorization":"Bearer"+token
-        },
-
-        success: () => getAllTasksByUserId() });
-    }
-
-  }
   function loadApplications() {
-
-
-    if (!ownerId || !token) {
-      console.error("Owner ID or Token missing!");
-      return;
-    }
+    if (!ownerId || !token) return;
 
     $.ajax({
       url: `http://localhost:8080/api/v1/application/${ownerId}`,
       method: 'GET',
-      headers: {
-        // Bearer සහ jwt අතර SPACE එකක් අනිවාර්යයෙන්ම තියෙන්න ඕනේ
-        "Authorization": "Bearer " + token
-      },
+      headers: { "Authorization": "Bearer " + token },
       success: function(res) {
         let rows = "";
-
-        // Backend එකෙන් ApiResponse<List<TaskApplicationDto>> එකක් එන නිසා
-        // අපි res.data තමයි loop කරන්න ඕනේ
         if (res && res.data) {
           res.data.forEach(app => {
             rows += `<tr>
-                        <td>ID: ${app.task_id}</td>
+                        <td> ${app.title}</td>
                         <td>Employee ID: ${app.employee_id}</td>
+
                         <td>
-                             <button class="btn btn-sm btn-success" onclick="changeStatus(${app.id}, 'ACCEPTED')">Accept</button>
-                             <button class="btn btn-sm btn-danger" onclick="changeStatus(${app.id}, 'REJECTED')">Reject</button>
+                             <button class="btn btn-sm btn-success" onclick="changeStatus(${app.id}, 'ACCEPTED', ${app.task_id}, ${app.employee_id})">Accept</button>
+                             <button class="btn btn-sm btn-danger" onclick="changeStatus(${app.id}, 'REJECTED', ${app.task_id}, ${app.employee_id})">Reject</button>
                         </td>
                     </tr>`;
           });
         }
-        $("#appTableBody").html(rows);
-      },
-      error: function(xhr) {
-        console.error("Error Status: " + xhr.status);
-        if(xhr.status === 403) {
-          alert("Access Denied: Please check if your token is valid or expired.");
-        }
+        $("#appTableBody").html(rows || "<tr><td colspan='3' class='text-center'>No applications found.</td></tr>");
       }
+    });
+  }
+
+  function completeAndPay(taskId) {
+    if(!confirm("Are you sure? This will release the payment to the student's wallet.")) return;
+    $.ajax({
+      url: `http://localhost:8080/api/v1/task/complete/${taskId}`,
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token },
+      success: () => {
+        alert("Payment Released Successfully!");
+        getAllTasksByUserId();
+        loadTransactionHistory();
+      }
+    });
+  }
+
+  function loadTransactionHistory() {
+    $.ajax({
+      url: `http://localhost:8080/api/v1/transaction/user/${ownerId}`,
+      method: 'GET',
+      headers: { 'Authorization': 'Bearer ' + token },
+      success: function(res) {
+        let rows = "";
+        if (res.data && res.data.length > 0) {
+          res.data.forEach(trx => {
+            rows += `<tr>
+                <td>${new Date(trx.timestamp).toLocaleDateString()}</td>
+                <td>${trx.taskTitle || 'GigLanka'}</td>
+                <td class="text-danger fw-bold">- LKR ${trx.amount.toFixed(2)}</td>
+                <td><span class="text-success small"><i class="fas fa-check"></i> Paid</span></td>
+            </tr>`;
+          });
+        } else {
+          rows = "<tr><td colspan='4' class='text-center text-muted'>No history found.</td></tr>";
+        }
+        $("#transactionTableBody").html(rows);
+      }
+    });
+  }
+
+  function deleteTask(id) {
+    if(confirm("Delete this task?")) {
+      $.ajax({ url: `http://localhost:8080/api/v1/task/${id}`, method: 'DELETE', headers: { 'Authorization': 'Bearer ' + token }, success: () => getAllTasksByUserId() });
+    }
+  }
+
+  function getStatusBadge(status) {
+    if(status === 'ACCEPTED') return 'bg-success';
+    if(status === 'REJECTED') return 'bg-danger';
+    return 'bg-secondary';
+  }
+  function changeStatus(appId, status, taskId, empId) {
+    if(!confirm(`Are you sure you want to ${status.toLowerCase()} this?`)) return;
+
+    // 1. Application එකේ status එක update කිරීම (Accepted/Rejected)
+    $.ajax({
+      url: `http://localhost:8080/api/v1/application/${appId}?status=${status}`,
+      method: 'PATCH',
+      headers: { 'Authorization': 'Bearer ' + token },
+      success: () => {
+        // 2. පිළිගත්තේ නම් (ACCEPTED), Task එක ONGOING කිරීමට Controller එක call කරයි
+        if(status === 'ACCEPTED') {
+          $.ajax({
+            url: `http://localhost:8080/api/v1/task/accept/${taskId}/${empId}`,
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + token },
+            success: () => {
+              alert("Application Accepted! Task is now ONGOING.");
+              loadApplications();
+              getAllTasksByUserId();
+            }
+          });
+        } else {
+          alert("Application Rejected!");
+          loadApplications();
+        }
+      },
+      error: (xhr) => alert("Failed to update status: " + xhr.status)
     });
   }
 

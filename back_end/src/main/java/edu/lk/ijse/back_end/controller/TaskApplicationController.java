@@ -36,9 +36,13 @@ private final TaskApplicationService taskApplicationService;
 
     }
 
+    // Controller එකේ තිබෙන පැරණි getByEmployee එක වෙනුවට මෙය යොදන්න
     @GetMapping("/employee/{id}")
-    public ResponseEntity<List<TaskApplicationDto>> getByEmployee(@PathVariable long id) {
-        return ResponseEntity.ok(service.getApplicationsByEmployee(id));
+    public ResponseEntity<ApiResponse<List<TaskApplicationDto>>> getByEmployee(@PathVariable long id) {
+        List<TaskApplicationDto> applications = service.getApplicationsByEmployee(id);
+        return new ResponseEntity<>(new ApiResponse<>(
+                200, "Applications fetched successfully", applications
+        ), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")

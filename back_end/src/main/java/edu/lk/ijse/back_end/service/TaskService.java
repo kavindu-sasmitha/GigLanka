@@ -11,4 +11,8 @@ public interface TaskService {
     void deleteTaskById(Long id);
 
     List<TaskDto> getAllTasksByOwnerId(Long ownerId);
+    void flashMatch(long taskId, long employeeId); // Flash Match Feature
+    void completeTask(long taskId); // Revenue & Escrow Logic
+    List<TaskDto> getTasksByDistrict(String district); // Local Alerts
+
 }

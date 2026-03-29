@@ -2,8 +2,11 @@ package edu.lk.ijse.back_end.service.impl;
 
 import edu.lk.ijse.back_end.dto.TaskDto;
 import edu.lk.ijse.back_end.entity.Task;
+import edu.lk.ijse.back_end.entity.Transaction;
 import edu.lk.ijse.back_end.entity.User;
+import edu.lk.ijse.back_end.entity.enums.TaskStatus;
 import edu.lk.ijse.back_end.repo.TaskRepo;
+import edu.lk.ijse.back_end.repo.TransactionRepo;
 import edu.lk.ijse.back_end.repo.UserRepo;
 import edu.lk.ijse.back_end.service.TaskService;
 import org.modelmapper.ModelMapper;
@@ -21,6 +24,8 @@ public class TaskServiceImpl implements TaskService {
     ModelMapper modelMapper;
     @Autowired
     UserRepo userRepo;
+    @Autowired
+    TransactionRepo transactionRepo;
 
     @Override
     public void saveTask(TaskDto taskDto) {
@@ -85,6 +90,57 @@ public class TaskServiceImpl implements TaskService {
 
                     return dto;
                 })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void flashMatch(long taskId, long employeeId) {
+        Task task = taskRepo.findById(taskId).orElseThrow();
+
+        // Flash Match Logic: පළමු ශිෂ්‍යයා තහවුරු වූ සැණින් වෙනත් අයට අවස්ථාව වැසේ
+        if (task.getStatus() == TaskStatus.PENDING) {
+            User employee = userRepo.findById(employeeId).orElseThrow();
+            task.setAcceptedEmployee(employee);
+            task.setStatus(TaskStatus.ONGOING);
+            taskRepo.save(task);
+        } else {
+            throw new RuntimeException("Task already taken by someone else!");
+        }
+    }
+
+    @Override
+    public void completeTask(long taskId) {
+        Task task = taskRepo.findById(taskId).orElseThrow();
+        if (task.getStatus() != TaskStatus.ONGOING) return;
+
+        double budget = task.getBudget();
+
+        // 3. Automated Revenue Logic: 2% System Fee & 98% Student Payment
+        double systemFee = budget * 0.02;
+        double studentPay = budget * 0.98;
+
+        // Student Wallet එකට මුදල් බැර කිරීම
+        User student = task.getAcceptedEmployee();
+        student.setWalletBalance(student.getWalletBalance() + studentPay);
+
+        task.setStatus(TaskStatus.COMPLETED);
+
+        // Transaction වාර්තාවක් තබා ගැනීම
+        Transaction tx = new Transaction();
+        tx.setTaskId(taskId);
+        tx.setTotalBudget(budget);
+        tx.setSystemFee(systemFee);
+        tx.setStudentEarned(studentPay);
+
+        taskRepo.save(task);
+        userRepo.save(student);
+        transactionRepo.save(tx);
+    }
+
+    @Override
+    public List<TaskDto> getTasksByDistrict(String district) {
+        return taskRepo.findByDistrictAndStatus(district, TaskStatus.PENDING)
+                .stream().map(t -> modelMapper.map(t, TaskDto.class))
                 .collect(Collectors.toList());
     }
 

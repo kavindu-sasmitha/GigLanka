@@ -32,6 +32,7 @@ public class UserService {
                 .username(registerDTO.getUserName())
                 .password(passwordEncoder.encode(registerDTO.getPassword()))
                 .nic(registerDTO.getNic())
+                .district(registerDTO.getDistrict())
                 .role(Role.valueOf(registerDTO.getRole().toUpperCase()))
                 .build();
 

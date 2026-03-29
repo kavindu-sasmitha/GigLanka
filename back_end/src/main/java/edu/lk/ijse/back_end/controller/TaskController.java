@@ -15,46 +15,60 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/task")
 public class TaskController {
+
     @Autowired
-    TaskService taskService;
+    private TaskService taskService;
+
     @PostMapping
-    public ResponseEntity<ApiResponse<String>>saveTask(@RequestBody @Valid TaskDto taskDto){
+    public ResponseEntity<ApiResponse<String>> saveTask(@RequestBody @Valid TaskDto taskDto) {
         taskService.saveTask(taskDto);
-        return new ResponseEntity<>(new ApiResponse<>(
-                201,"Task saved",null
-        ),
-                HttpStatus.CREATED);
-
-
+        return new ResponseEntity<>(new ApiResponse<>(201, "Task saved", null), HttpStatus.CREATED);
     }
+
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<String>>updateTask(@RequestBody @Valid TaskDto taskDto){
+    public ResponseEntity<ApiResponse<String>> updateTask(@RequestBody @Valid TaskDto taskDto) {
         taskService.updateTask(taskDto);
-        return new ResponseEntity<>(new ApiResponse<>(
-                200,"Task updated",null
-        ),HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse<>(200, "Task updated", null), HttpStatus.OK);
     }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<String>>deleteTask(@PathVariable Long id){
+    public ResponseEntity<ApiResponse<String>> deleteTask(@PathVariable Long id) {
         taskService.deleteTaskById(id);
-        return new ResponseEntity<>(new ApiResponse<>(
-                200,"Task deleted",null
-        ),HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse<>(200, "Task deleted", null), HttpStatus.OK);
     }
+
     @GetMapping("/all")
-    public List<TaskDto> getAllTasks(){
+    public List<TaskDto> getAllTasks() {
         return taskService.getAllTasks();
     }
+
     @GetMapping("/{owner_id}")
     public ResponseEntity<ApiResponse<List<TaskDto>>> getAllTasksByUserId(@PathVariable Long owner_id) {
-
         List<TaskDto> taskList = taskService.getAllTasksByOwnerId(owner_id);
+        return new ResponseEntity<>(new ApiResponse<>(200, "Tasks fetched successfully", taskList), HttpStatus.OK);
+    }
 
+    // Hyper-Local: දිස්ත්‍රික්කය අනුව වැඩ සෙවීම
+    @GetMapping("/nearby/{district}")
+    public ResponseEntity<List<TaskDto>> getNearbyTasks(@PathVariable String district) {
+        return ResponseEntity.ok(taskService.getTasksByDistrict(district));
+    }
 
+    // Flash Match: අයිතිකරු විසින් ශිෂ්‍යයෙකුගේ ඉල්ලීම පිළිගැනීම
+    @PostMapping("/accept/{taskId}/{employeeId}")
+    public ResponseEntity<ApiResponse<String>> acceptTask(@PathVariable long taskId, @PathVariable long employeeId) {
+        taskService.flashMatch(taskId, employeeId);
         return new ResponseEntity<>(new ApiResponse<>(
-                200,
-                "Tasks fetched successfully",
-                taskList
+                200, "Task accepted and status changed to ONGOING", null
+        ), HttpStatus.OK);
+    }
+
+    // Task Completion: වැඩේ ඉවර බව තහවුරු කර මුදල් ගෙවීම (Release Payment)
+    @PostMapping("/complete/{taskId}")
+    public ResponseEntity<ApiResponse<String>> completeTask(@PathVariable long taskId) {
+        taskService.completeTask(taskId);
+        return new ResponseEntity<>(new ApiResponse<>(
+                200, "Payment processed and Task completed successfully", null
         ), HttpStatus.OK);
     }
 }

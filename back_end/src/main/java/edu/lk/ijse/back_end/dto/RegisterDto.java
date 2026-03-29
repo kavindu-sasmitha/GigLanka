@@ -12,5 +12,6 @@ public class RegisterDto {
     private String userName; // Email
     private String password;
     private String nic;
+    private String district;
     private String role; // EMPLOY,TASK_OWNER
 }

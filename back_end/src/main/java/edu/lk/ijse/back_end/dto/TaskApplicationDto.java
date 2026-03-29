@@ -14,7 +14,7 @@ public class TaskApplicationDto {
     private long task_id;       // Task Entity ID
 
     private long employee_id;   // User (Employee) Entity ID
-    private String fullName;
+    private String full_name;
     private String status;// ApplicationStatus Enum String (PENDING, ACCEPTED, etc.)
     private String title;
     private LocalDateTime appliedAt;

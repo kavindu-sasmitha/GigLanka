@@ -10,21 +10,18 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Getter
-@Setter
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private String fullName;
     private String title;
     private double budget;
-    private String locationName;
+    private String district; // New: For Local Proximity
     private double latitude;
     private double longitude;
-    private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
     private TaskStatus status = TaskStatus.PENDING;
@@ -32,6 +29,10 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private User owner;
+
+    @OneToOne
+    @JoinColumn(name = "accepted_employee_id")
+    private User acceptedEmployee; // New: Flash Match result
 
     private LocalDateTime createdAt = LocalDateTime.now();
 }

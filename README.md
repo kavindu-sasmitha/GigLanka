@@ -5,11 +5,12 @@
 ---
 
 # 📺 Project Demonstration (Video)
-Click the image below to watch the full system demonstration and technical explanation:
 
-[![Watch the video](https://img.youtu.be/f4R4Lx3AIug/0.jpg)](https://youtu.be/f4R4Lx3AIug)
+Click the image below to watch the full system walkthrough and technical explanation of GigLanka:
 
-> **Note:** If the link above doesn't work, [Click Here](https://youtu.be/f4R4Lx3AIug) to watch the video on YouTube.
+[![GigLanka Demo](https://img.youtube.com/vi/f4R4Lx3AIug/maxresdefault.jpg)](https://www.youtube.com/watch?v=f4R4Lx3AIug)
+
+> link is dons't support , [click this](https://www.youtube.com/watch?v=f4R4Lx3AIug) watch video.
 
 ---
 ## 🚀 Key Features

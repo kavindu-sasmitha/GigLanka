@@ -4,78 +4,231 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GigLanka | Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     body {
       margin: 0;
       font-family: 'Inter', sans-serif;
-      background: #0f172a;
+      background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
+      color: #1e2937;
+    }
+
+    .login-container {
+      display: flex;
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      width: 900px;
+      max-width: 95%;
+    }
+
+    /* Left Side - Branding */
+    .left-side {
+      background: linear-gradient(135deg, #10b981, #34d399);
       color: white;
+      padding: 60px 50px;
+      width: 380px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
     }
-    .login-card {
-      background: rgba(30, 41, 59, 0.7);
-      padding: 40px;
-      border-radius: 16px;
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      width: 350px;
-      text-align: center;
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 40px;
     }
-    h2 { margin-bottom: 25px; font-weight: 600; letter-spacing: 1px; }
-    .input-group { margin-bottom: 20px; text-align: left; }
-    label { display: block; font-size: 13px; color: #94a3b8; margin-bottom: 5px; }
+
+    .sri-lanka-flag {
+      width: 45px;
+      height: 30px;
+      background: linear-gradient(to right, #ff0000 40%, #ffcc00 40%);
+      border: 2px solid rgba(255,255,255,0.9);
+      position: relative;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .sri-lanka-flag::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(15deg);
+      width: 14px;
+      height: 14px;
+      background: #006600;
+      border-radius: 50%;
+    }
+
+    .brand-title {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -1px;
+    }
+
+    .tagline {
+      font-size: 17px;
+      opacity: 0.95;
+      margin-top: 8px;
+      line-height: 1.4;
+    }
+
+    /* Right Side - Form */
+    .right-side {
+      padding: 60px 50px;
+      flex: 1;
+    }
+
+    h2 {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #0f172a;
+    }
+
+    .subtitle {
+      color: #64748b;
+      margin-bottom: 35px;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      color: #475569;
+      margin-bottom: 8px;
+    }
+
     input {
       width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #334155;
-      background: #1e293b;
-      color: white;
-      box-sizing: border-box;
+      padding: 14px 18px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      font-size: 15px;
+      background: white;
+      color: #1e2937;
+      transition: all 0.3s;
+    }
+
+    input:focus {
       outline: none;
+      border-color: #10b981;
+      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
     }
-    input:focus { border-color: #38bdf8; }
-    .btn {
+
+    .btn-login {
       width: 100%;
-      padding: 12px;
-      background: #38bdf8;
+      padding: 14px;
+      background: linear-gradient(135deg, #10b981, #34d399);
       border: none;
-      border-radius: 8px;
-      color: #0f172a;
-      font-weight: bold;
+      border-radius: 12px;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
       cursor: pointer;
-      transition: 0.3s;
+      margin-top: 10px;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.25);
     }
-    .btn:hover { background: #0ea5e9; transform: translateY(-2px); }
-    .switch { margin-top: 20px; font-size: 13px; color: #94a3b8; }
-    .switch a { color: #38bdf8; text-decoration: none; }
+
+    .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.35);
+    }
+
+    .switch {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 14.5px;
+      color: #64748b;
+    }
+
+    .switch a {
+      color: #10b981;
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    .switch a:hover {
+      text-decoration: underline;
+    }
+
+    .icon {
+      font-size: 18px;
+      margin-right: 8px;
+    }
   </style>
 </head>
 <body>
-<div class="login-card">
-  <h2>GigLanka Login</h2>
-  <form>
-    <div class="input-group">
-      <label>Username (Email)</label>
-      <input type="email" id="email" placeholder="kavindu@example.com" required>
+
+<div class="login-container">
+  <!-- Left Side - Sri Lankan Branding -->
+  <div class="left-side">
+    <div class="logo-container">
+      <div class="sri-lanka-flag"></div>
+      <div>
+        <div class="brand-title">GigLanka</div>
+      </div>
     </div>
-    <div class="input-group">
-      <label>Password</label>
-      <input type="password" id="password" placeholder="••••••••" required>
+
+    <h1 style="font-size: 42px; font-weight: 700; line-height: 1.1;">Welcome Back</h1>
+    <p class="tagline">Connect with local gigs across Sri Lanka.<br>Find work or hire help instantly.</p>
+
+    <div style="margin-top: auto; font-size: 13px; opacity: 0.85;">
+      <i class="fas fa-map-marker-alt"></i> Sri Lanka
     </div>
-    <button type="button" class="btn" onclick="loginUser()">Sign In</button>
-  </form>
-  <div class="switch">Don't have an account? <a href="register.html">Register</a></div>
+  </div>
+
+  <!-- Right Side - Login Form -->
+  <div class="right-side">
+    <h2>Sign In</h2>
+    <p class="subtitle">Access your GigLanka account</p>
+
+    <form>
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" placeholder="kavindu@example.com" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="••••••••" required>
+      </div>
+
+      <button type="button" class="btn-login" onclick="loginUser()">
+        <i class="fas fa-sign-in-alt icon"></i> Sign In
+      </button>
+    </form>
+
+    <div class="switch">
+      Don't have an account?
+      <a href="register.html">Create Account</a>
+    </div>
+  </div>
 </div>
+
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
   function loginUser() {
-    let email = $('#email').val();
-    let password = $('#password').val();
+    let email = $('#email').val().trim();
+    let password = $('#password').val().trim();
+
+    if (!email || !password) {
+      alert("Please enter both email and password");
+      return;
+    }
 
     $.ajax({
       url: 'http://localhost:8080/api/v1/auth/signin',
@@ -86,47 +239,62 @@
         password: password
       }),
       success: function(response) {
-        // 1. Response එක සාර්ථකද කියා බැලීම
-        if (response.code == 200 && response.data && response.data.access_token) {
-          localStorage.setItem("owner_id", response.data.id);
-          localStorage.setItem("full_name", response.data.name);
-          const token = response.data.access_token;
-          localStorage.setItem('jwtToken', token);
+        if (response.code === 200 && response.data && response.data.access_token) {
+
+          // Save user data
+          localStorage.setItem("owner_id", response.data.id || response.data.userId);
+          localStorage.setItem("full_name", response.data.name || response.data.fullName);
+          localStorage.setItem('jwtToken', response.data.access_token);
 
           try {
-            // 2. JWT Token එකේ මැද කොටස (Payload) Decode කිරීම
-            // Token එක කොටස් 3කි: Header.Payload.Signature
+            // Decode JWT to get role
+            const token = response.data.access_token;
             const base64Url = token.split('.')[1];
             const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
             const payload = JSON.parse(atob(base64));
 
-            console.log("User Payload:", payload); // Debug කරලා බලන්න role එක තියෙන තැන
+            console.log("Decoded Payload:", payload);
 
-            // 3. Role එක අනුව Redirect කිරීම
-            // ඔබේ Backend එකෙන් එන role name එක අනුව මෙතන "EMPLOYEE" හෝ "TASK_OWNER" වෙනස් කරන්න
-            const userRole = payload.role;
+            const userRole = payload.role || payload.authorities || "";
 
-            if (userRole === "EMPLOY") {
+            // Adjust these role names according to your actual backend
+            if (userRole.includes("EMPLOYEE") || userRole.includes("EMP")) {
               window.location.href = "emp_dashboard.html";
-            } else if (userRole === "TASK_OWNER") {
+            }
+            else if (userRole.includes("OWNER") || userRole.includes("TASK_OWNER")) {
               window.location.href = "owner_dashboard.html";
+            }
+            else {
+              alert("Login successful, but role not recognized.");
             }
 
           } catch (error) {
-            console.error("Error decoding token:", error);
-            alert("Login success, but could not determine user role.");
+            console.error("Token decode error:", error);
+            // Default fallback - you can change this
+            window.location.href = "owner_dashboard.html";
           }
 
         } else {
-          alert("Login failed: " + (response.message || "Invalid Credentials"));
+          alert("Login failed: " + (response.message || "Invalid credentials"));
         }
       },
       error: function(xhr) {
-        alert("Error " + xhr.status + ": Login Failed");
-        console.log(xhr.responseText);
+        console.log(xhr);
+        let msg = "Login failed. Please check your credentials.";
+        if (xhr.responseJSON && xhr.responseJSON.message) {
+          msg = xhr.responseJSON.message;
+        }
+        alert(msg);
       }
     });
   }
+
+  // Allow pressing Enter key to login
+  document.addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
+      loginUser();
+    }
+  });
 </script>
 </body>
 </html>

@@ -4,45 +4,192 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GigLanka | Employee Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        body { margin: 0; font-family: 'Inter', sans-serif; background: #0f172a; color: white; min-height: 100vh; }
-        .sidebar { height: 100vh; background: rgba(30, 41, 59, 0.5); backdrop-filter: blur(10px); border-right: 1px solid rgba(255, 255, 255, 0.1); position: fixed; width: 260px; padding: 30px 20px; z-index: 1000; }
-        .main-content { margin-left: 260px; padding: 40px; }
-        .glass-card { background: rgba(30, 41, 59, 0.7); padding: 25px; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); margin-bottom: 25px; }
-        #map { height: 400px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #334155; filter: grayscale(0.5) invert(0.9) hue-rotate(180deg); }
-        .task-card { background: #1e293b; border: 1px solid #334155; padding: 15px; border-radius: 12px; margin-bottom: 12px; transition: 0.3s; }
-        .task-card:hover { border-color: #10b981; transform: translateY(-2px); }
-        .btn-apply { background: #10b981; border: none; border-radius: 8px; padding: 8px 16px; font-weight: 600; color: white; }
-        .btn-direction { background: #3b82f6; border: none; border-radius: 8px; padding: 8px 16px; font-weight: 600; color: white; margin-right: 5px; text-decoration: none; display: inline-block; font-size: 14px; }
-        .nav-link { color: #94a3b8 !important; padding: 12px 15px; border-radius: 10px; margin-bottom: 10px; text-decoration: none; display: block; cursor: pointer; }
-        .nav-link.active { background: rgba(16, 185, 129, 0.1); color: #10b981 !important; }
+        :root {
+            --primary: #10b981;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            color: #1e2937;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            height: 100vh;
+            background: white;
+            border-right: 1px solid #e2e8f0;
+            position: fixed;
+            width: 280px;
+            padding: 32px 24px;
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.05);
+            z-index: 1000;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 50px;
+        }
+
+        .sri-lanka-flag {
+            width: 38px;
+            height: 25px;
+            background: linear-gradient(to right, #ff0000 40%, #ffcc00 40%);
+            border: 1px solid #e2e8f0;
+            position: relative;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .sri-lanka-flag::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(15deg);
+            width: 12px;
+            height: 12px;
+            background: #006600;
+            border-radius: 50%;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: #0f172a;
+            letter-spacing: -1px;
+        }
+
+        .nav-link {
+            color: #475569;
+            padding: 14px 20px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: #ecfdf5;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .nav-link.active {
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+        }
+
+        .main-content {
+            margin-left: 280px;
+            padding: 40px 50px;
+        }
+
+        .glass-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+            margin-bottom: 30px;
+        }
+
+        #map {
+            height: 420px;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .task-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+        }
+
+        .task-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+        }
+
+        .btn-apply {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            border: none;
+            border-radius: 12px;
+            padding: 12px 26px;
+            font-weight: 600;
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.25);
+        }
+
+        .btn-direction {
+            background: #2563eb;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 20px;
+            color: white;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+        }
+
+        .badge {
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 13px;
+        }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
-    <h3 class="fw-bold mb-5" style="color: #10b981;">GigLanka</h3>
+    <div class="logo-container">
+        <div class="sri-lanka-flag"></div>
+        <span class="logo">GigLanka</span>
+    </div>
+
     <nav class="nav flex-column">
-        <a class="nav-link active"><i class="fas fa-search me-2"></i> Browse Tasks</a>
+        <a class="nav-link active"><i class="fas fa-compass me-2"></i> Browse Tasks</a>
         <a class="nav-link" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#completedTasksModal" onclick="loadCompletedTasks()">
             <i class="fas fa-briefcase me-2"></i> My Applications
         </a>
-        <div class="mt-5"><a class="nav-link text-danger" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></div>
+        <div class="mt-auto pt-5">
+            <a class="nav-link text-danger" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i> Logout</a>
+        </div>
     </nav>
 </div>
 
 <div class="main-content">
+    <div class="row mb-4">
+        <div class="col-md-5">
+            <div class="glass-card text-center" style="border-left: 6px solid #10b981;">
+                <p class="text-muted small mb-1">My Earnings (98% Share)</p>
+                <h3 id="walletBalance" class="fw-bold text-success mb-0">LKR 0.00</h3>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-lg-8">
             <div class="glass-card">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h5><i class="fas fa-map-marked-alt text-success me-2"></i> Explore Tasks</h5>
-                    <select id="districtFilter" class="form-select w-50" onchange="filterTasks()" style="background: #1e293b; color: white; border: 1px solid #334155;">
-                        <option value="All">All Districts (Sri Lanka)</option>
+                    <h5><i class="fas fa-map-marked-alt text-success me-3"></i> Explore Available Gigs</h5>
+                    <select id="districtFilter" class="form-select w-50" onchange="filterTasks()">
+                        <option value="All">All Districts - Sri Lanka</option>
                         <option value="Ampara">Ampara</option>
                         <option value="Anuradhapura">Anuradhapura</option>
                         <option value="Badulla">Badulla</option>
@@ -70,45 +217,53 @@
                         <option value="Vavuniya">Vavuniya</option>
                     </select>
                 </div>
+
                 <div id="map"></div>
-                <div id="taskList"></div>
+
+                <div class="mt-4">
+                    <h6 class="mb-3">Available Tasks Near You</h6>
+                    <div id="taskList"></div>
+                </div>
             </div>
         </div>
 
         <div class="col-lg-4">
             <div class="glass-card">
-                <h6><i class="fas fa-list-ul text-success me-2"></i> My Applications</h6>
-                <table class="table table-hover table-dark mt-3" style="font-size: 13px;">
-                    <thead>
-                    <tr>
-                        <th>Task</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                    </thead>
-                    <tbody id="employeeTaskTableBody">
-                    </tbody>
-                </table>
+                <h6 class="mb-3"><i class="fas fa-list-ul text-success me-2"></i> My Applications</h6>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                        <tr>
+                            <th>Task</th>
+                            <th>Status</th>
+                            <th class="text-end">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody id="employeeTaskTableBody"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Completed Tasks Modal -->
 <div class="modal fade" id="completedTasksModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content" style="background: #1e293b; color: white; border: 1px solid rgba(255, 255, 255, 0.1);">
-            <div class="modal-header" style="border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-                <h5 class="modal-title" id="modalLabel"><i class="fas fa-check-circle text-success me-2"></i> My Completed Tasks</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel">
+                    <i class="fas fa-check-circle text-success me-2"></i> My Completed Tasks
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="table-responsive">
-                    <table class="table table-dark table-hover">
+                    <table class="table table-hover">
                         <thead>
                         <tr><th>Task Title</th><th>Status</th></tr>
                         </thead>
-                        <tbody id="completedTaskTableBody">
-                        </tbody>
+                        <tbody id="completedTaskTableBody"></tbody>
                     </table>
                 </div>
             </div>
@@ -117,7 +272,7 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
     let allTasks = [];
@@ -130,23 +285,25 @@
     const employeeName = localStorage.getItem('full_name');
 
     $(document).ready(function() {
-        if (!token) { window.location.href = "login.html"; return; }
+        if (!token) {
+            window.location.href = "../login.html";
+            return;
+        }
+
         fetchWalletBalance();
-        getAllTasksByUserId();
         fetchAllTasks();
+        getAllTasksByUserId();
     });
 
     function fetchWalletBalance() {
         $.ajax({
-            url: `http://localhost:8080/api/v1/transactions`,
+            url: `http://localhost:8080/api/v1/transactions/${employeeId}`,
             method: 'GET',
             headers: { 'Authorization': 'Bearer ' + token },
             success: (transactions) => {
-                let totalBalance = 0;
-                transactions.forEach(tx => {
-                    totalBalance += tx.studentEarned;
-                });
-                $("#walletBalance").text(`LKR ${totalBalance.toFixed(2)}`);
+                let total = 0;
+                (transactions || []).forEach(tx => total += (tx.studentEarned || 0));
+                $("#walletBalance").text(`LKR ${total.toFixed(2)}`);
             }
         });
     }
@@ -157,30 +314,41 @@
             method: 'GET',
             headers: { 'Authorization': 'Bearer ' + token },
             success: function(res) {
-                allTasks = res.data || res;
+                allTasks = res.data || res || [];
                 filterTasks();
             }
         });
     }
 
     function filterTasks() {
-        const selectedDist = $("#districtFilter").val();
+        const selectedDist = $("#districtFilter").val() || "All";
         markersLayer.clearLayers();
         $("#taskList").empty();
-        const filtered = allTasks.filter(t => (selectedDist === "All" || t.locationName === selectedDist) && t.status === "PENDING");
+
+        const filtered = allTasks.filter(t => {
+            const loc = (t.locationName || t.district || "").trim();
+            return (selectedDist === "All" || loc === selectedDist) && t.status === "PENDING";
+        });
+
         filtered.forEach(task => {
-            const marker = L.marker([task.latitude, task.longitude]).addTo(markersLayer);
-            marker.bindPopup(`<div style="color:black"><strong>${task.title}</strong><br>LKR ${task.budget}</div>`);
+            const lat = parseFloat(task.latitude) || 6.9271;
+            const lng = parseFloat(task.longitude) || 79.8612;
+            const locName = task.locationName || task.district || "Unknown";
+
+            L.marker([lat, lng]).addTo(markersLayer)
+                .bindPopup(`<b>${task.title}</b><br>LKR ${task.budget}`);
+
             $("#taskList").append(`
                 <div class="task-card">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h6 class="mb-1">${task.title}</h6>
-                            <p class="small text-muted mb-0"><i class="fas fa-coins me-1"></i> LKR ${task.budget} | <i class="fas fa-map-marker-alt me-1"></i> ${task.locationName}</p>
+                            <p class="small text-muted mb-0">
+                                <i class="fas fa-coins me-1"></i> LKR ${task.budget || 0} |
+                                <i class="fas fa-map-marker-alt me-1"></i> ${locName}
+                            </p>
                         </div>
-                        <div>
-                            <button class="btn-apply" onclick="applyTask(${task.id})">Flash Accept</button>
-                        </div>
+                        <button class="btn-apply" onclick="applyTask(${task.id})">Flash Accept</button>
                     </div>
                 </div>
             `);
@@ -188,15 +356,23 @@
     }
 
     function applyTask(taskId) {
-        let applicationData = { id: 0, task_id: taskId, employee_id: parseInt(employeeId), full_name:employeeName, status: "PENDING" };
+        const applicationData = {
+            id: 0,
+            task_id: taskId,
+            employee_id: parseInt(employeeId),
+            full_name: employeeName,
+            title:taskId.title,
+            status: "PENDING"
+        };
+
         $.ajax({
             url: 'http://localhost:8080/api/v1/application',
             method: 'POST',
             contentType: 'application/json',
             headers: { 'Authorization': 'Bearer ' + token },
             data: JSON.stringify(applicationData),
-            success: function () {
-                alert("Applied successfully!");
+            success: () => {
+                alert("✅ Applied successfully!");
                 getAllTasksByUserId();
             },
             error: (xhr) => alert("Error: " + xhr.status)
@@ -207,32 +383,42 @@
         $.ajax({
             url: `http://localhost:8080/api/v1/application/employee/${employeeId}`,
             method: 'GET',
-            headers: { 'Authorization': 'Bearer ' +  token },
+            headers: { 'Authorization': 'Bearer ' + token },
             success: function(res) {
                 let rows = "";
-                const data = res.data || res;
-                if (data && data.length > 0) {
+                const data = res.data || res || [];
+
+                if (data.length > 0) {
                     data.forEach(app => {
                         let directionBtn = "";
+
+                        // FIXED: Properly check for direction button
                         if (app.status === 'ACCEPTED' || app.status === 'ONGOING') {
-                            const lat = app.latitude || 6.9271;
-                            const lng = app.longitude || 79.8612;
+                            const lat = parseFloat(app.latitude) || 6.9271;
+                            const lng = parseFloat(app.longitude) || 79.8612;
                             const googleMapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
-                            directionBtn = `<a href="${googleMapsUrl}" target="_blank" class="btn btn-sm btn-info text-white me-1"><i class="fas fa-location-arrow"></i></a>`;
+
+                            directionBtn = `
+                                <a href="${googleMapsUrl}" target="_blank" class="btn-direction" title="Get Directions">
+                                    <i class="fas fa-location-arrow"></i> Directions
+                                </a>`;
                         }
+
                         rows += `<tr>
                             <td><small>${app.title || 'Task'}</small></td>
                             <td><span class="badge ${getStatusColor(app.status)}">${app.status}</span></td>
-                            <td>
-                                <div class="d-flex align-items-center">
+                            <td class="text-end">
+                                <div class="d-flex gap-2 justify-content-end">
                                     ${directionBtn}
-                                    <button class="btn btn-sm btn-danger" onclick="deleteApplyTask(${app.id})"><i class="fas fa-times"></i></button>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteApplyTask(${app.id})">
+                                        <i class="fas fa-times"></i>
+                                    </button>
                                 </div>
                             </td>
                         </tr>`;
                     });
                 } else {
-                    rows = "<tr><td colspan='3' class='text-center text-muted small'>No applications found.</td></tr>";
+                    rows = `<tr><td colspan="3" class="text-center text-muted py-4">No applications found yet.</td></tr>`;
                 }
                 $("#employeeTaskTableBody").html(rows);
             }
@@ -240,12 +426,15 @@
     }
 
     function deleteApplyTask(id) {
-        if(confirm("Cancel this application?")) {
+        if (confirm("Cancel this application?")) {
             $.ajax({
                 url: `http://localhost:8080/api/v1/application/${id}`,
                 method: 'DELETE',
                 headers: { 'Authorization': 'Bearer ' + token },
-                success: () => { alert("Cancelled!"); getAllTasksByUserId(); }
+                success: () => {
+                    alert("Cancelled successfully!");
+                    getAllTasksByUserId();
+                }
             });
         }
     }
@@ -257,15 +446,16 @@
             headers: { 'Authorization': 'Bearer ' + token },
             success: (tasks) => {
                 let rows = "";
-                if (tasks && tasks.length > 0) {
-                    tasks.forEach(task => {
+                const taskList = tasks || [];
+                if (taskList.length > 0) {
+                    taskList.forEach(task => {
                         rows += `<tr>
-                                <td>${task.title}</td>
-                                <td><span class="badge bg-success">${task.status}</span></td>
-                             </tr>`;
+                            <td>${task.title}</td>
+                            <td><span class="badge bg-success">${task.status}</span></td>
+                         </tr>`;
                     });
                 } else {
-                    rows = "<tr><td colspan='2' class='text-center'>No completed tasks yet.</td></tr>";
+                    rows = `<tr><td colspan="2" class="text-center text-muted py-4">No completed tasks yet.</td></tr>`;
                 }
                 $("#completedTaskTableBody").html(rows);
             }
@@ -274,12 +464,15 @@
 
     function getStatusColor(status) {
         if (status === 'PENDING') return 'bg-warning text-dark';
-        if (status === 'ACCEPTED' || status === 'ONGOING') return 'bg-success';
-        if (status === 'REJECTED') return 'bg-danger';
-        return 'bg-secondary';
+        if (status === 'ACCEPTED' || status === 'ONGOING') return 'bg-success text-white';
+        if (status === 'REJECTED') return 'bg-danger text-white';
+        return 'bg-secondary text-white';
     }
 
-    function logout() { localStorage.clear(); window.location.href = "login.html"; }
+    function logout() {
+        localStorage.clear();
+        window.location.href = "login.html";
+    }
 </script>
 </body>
 </html>

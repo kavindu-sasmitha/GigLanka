@@ -4,105 +4,264 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GigLanka | Register</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     body {
       margin: 0;
       font-family: 'Inter', sans-serif;
-      background: #0f172a;
+      background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      color: white;
+      color: #1e2937;
       padding: 20px 0;
     }
-    .register-card {
-      background: rgba(30, 41, 59, 0.7);
-      padding: 40px;
-      border-radius: 16px;
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+
+    .register-container {
+      display: flex;
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      width: 950px;
+      max-width: 95%;
+    }
+
+    /* Left Side - Branding */
+    .left-side {
+      background: linear-gradient(135deg, #10b981, #34d399);
+      color: white;
+      padding: 70px 55px;
       width: 400px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
-    h2 { text-align: center; margin-bottom: 25px; }
-    .input-group { margin-bottom: 15px; }
-    label { display: block; font-size: 13px; color: #94a3b8; margin-bottom: 5px; }
-    input, select {
-      width: 100%;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #334155;
-      background: #1e293b;
-      color: white;
-      box-sizing: border-box;
-      outline: none;
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 40px;
     }
-    .btn {
-      width: 100%;
-      padding: 12px;
-      background: #10b981;
-      border: none;
-      border-radius: 8px;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
+
+    .sri-lanka-flag {
+      width: 48px;
+      height: 32px;
+      background: linear-gradient(to right, #ff0000 40%, #ffcc00 40%);
+      border: 2px solid rgba(255,255,255,0.9);
+      position: relative;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .sri-lanka-flag::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(15deg);
+      width: 15px;
+      height: 15px;
+      background: #006600;
+      border-radius: 50%;
+    }
+
+    .brand-title {
+      font-size: 34px;
+      font-weight: 700;
+      letter-spacing: -1.2px;
+    }
+
+    .tagline {
+      font-size: 17.5px;
+      opacity: 0.95;
+      line-height: 1.5;
       margin-top: 10px;
     }
-    .btn:hover { background: #059669; }
-    .switch { text-align: center; margin-top: 15px; font-size: 13px; color: #94a3b8; }
-    .switch a { color: #10b981; text-decoration: none; }
+
+    /* Right Side - Form */
+    .right-side {
+      padding: 65px 60px;
+      flex: 1;
+    }
+
+    h2 {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #0f172a;
+    }
+
+    .subtitle {
+      color: #64748b;
+      margin-bottom: 35px;
+    }
+
+    .form-group {
+      margin-bottom: 22px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      color: #475569;
+      margin-bottom: 8px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 14px 18px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      font-size: 15px;
+      background: white;
+      color: #1e2937;
+      transition: all 0.3s;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #10b981;
+      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+    }
+
+    .btn-register {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #10b981, #34d399);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 15px;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.25);
+    }
+
+    .btn-register:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.35);
+    }
+
+    .switch {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 14.5px;
+      color: #64748b;
+    }
+
+    .switch a {
+      color: #10b981;
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    .switch a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
-<div class="register-card">
-  <h2>Create Account</h2>
-  <form id="registerForm">
-    <div class="input-group">
-      <label>Full Name</label>
-      <input type="text" id="fullName" placeholder="Kavindu Sasmitha" required>
-    </div>
-    <div class="input-group">
-      <label>Email Address</label>
-      <input type="email" id="email" placeholder="kavindu@example.com" required>
-    </div>
-    <div class="input-group">
-      <label>NIC Number</label>
-      <input type="text" id="nic" placeholder="2001XXXXXXXX" required>
+
+<div class="register-container">
+  <!-- Left Side - Sri Lankan Branding -->
+  <div class="left-side">
+    <div class="logo-container">
+      <div class="sri-lanka-flag"></div>
+      <div>
+        <div class="brand-title">GigLanka</div>
+      </div>
     </div>
 
-    <div class="input-group">
-      <label>District</label>
-      <select id="district" required>
-        <option value="" disabled selected>Select District</option>
-        <option value="Colombo">Colombo</option>
-        <option value="Gampaha">Gampaha</option>
-        <option value="Kalutara">Kalutara</option>
-        <option value="Kandy">Kandy</option>
-        <option value="Galle">Galle</option>
-        <option value="Matara">Matara</option>
-        <option value="Jaffna">Jaffna</option>
-        <option value="Kurunegala">Kurunegala</option>
-        <option value="Anuradhapura">Anuradhapura</option>
-        <option value="Ratnapura">Ratnapura</option>
-        <option value="Badulla">Badulla</option>
-      </select>
-    </div>
+    <h1 style="font-size: 42px; font-weight: 700; line-height: 1.1;">Join Sri Lanka's<br>Biggest Gig Network</h1>
+    <p class="tagline">Find local work opportunities or hire reliable help across the island in minutes.</p>
 
-    <div class="input-group">
-      <label>User Role</label>
-      <select id="role" required>
-        <option value="EMPLOY">Employ</option>
-        <option value="TASK_OWNER">Task Owner</option>
-      </select>
+    <div style="margin-top: auto; font-size: 13.5px; opacity: 0.9;">
+      🇱🇰 Made for Sri Lankans • By Sri Lankans
     </div>
-    <div class="input-group">
-      <label>Password</label>
-      <input type="password" id="password" placeholder="••••••••" required>
+  </div>
+
+  <!-- Right Side - Registration Form -->
+  <div class="right-side">
+    <h2>Create Your Account</h2>
+    <p class="subtitle">Start earning or hiring today</p>
+
+    <form id="registerForm">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="fullName" placeholder="Kavindu Sasmitha" required>
+      </div>
+
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="email" placeholder="kavindu@example.com" required>
+      </div>
+
+      <div class="form-group">
+        <label>NIC Number</label>
+        <input type="text" id="nic" placeholder="200112345678" maxlength="12" required>
+      </div>
+
+      <div class="form-group">
+        <label>District</label>
+        <select id="district" required>
+          <option value="" disabled selected>Select your district</option>
+          <option value="Ampara">Ampara</option>
+          <option value="Anuradhapura">Anuradhapura</option>
+          <option value="Badulla">Badulla</option>
+          <option value="Batticaloa">Batticaloa</option>
+          <option value="Colombo">Colombo</option>
+          <option value="Galle">Galle</option>
+          <option value="Gampaha">Gampaha</option>
+          <option value="Hambantota">Hambantota</option>
+          <option value="Jaffna">Jaffna</option>
+          <option value="Kalutara">Kalutara</option>
+          <option value="Kandy">Kandy</option>
+          <option value="Kegalle">Kegalle</option>
+          <option value="Kilinochchi">Kilinochchi</option>
+          <option value="Kurunegala">Kurunegala</option>
+          <option value="Mannar">Mannar</option>
+          <option value="Matale">Matale</option>
+          <option value="Matara">Matara</option>
+          <option value="Moneragala">Moneragala</option>
+          <option value="Mullaitivu">Mullaitivu</option>
+          <option value="Nuwara Eliya">Nuwara Eliya</option>
+          <option value="Polonnaruwa">Polonnaruwa</option>
+          <option value="Puttalam">Puttalam</option>
+          <option value="Ratnapura">Ratnapura</option>
+          <option value="Trincomalee">Trincomalee</option>
+          <option value="Vavuniya">Vavuniya</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>I want to</label>
+        <select id="role" required>
+          <option value="EMPLOY">Find Work (Employee / Gig Worker)</option>
+          <option value="TASK_OWNER">Post Tasks & Hire Help (Task Owner)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="Create a strong password" required>
+      </div>
+
+      <button type="submit" class="btn-register">
+        <i class="fas fa-user-plus me-2"></i> Create Account
+      </button>
+    </form>
+
+    <div class="switch">
+      Already have an account?
+      <a href="login.html">Sign In</a>
     </div>
-    <button type="submit" class="btn">Register Now</button>
-  </form>
-  <div class="switch">Already have an account? <a href="login.html">Login</a></div>
+  </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -115,12 +274,17 @@
   });
 
   function registerUser() {
-    let fullName = $('#fullName').val();
-    let email = $('#email').val();
-    let nic = $('#nic').val();
-    let district = $('#district').val(); // District එක ලබා ගැනීම
+    let fullName = $('#fullName').val().trim();
+    let email = $('#email').val().trim();
+    let nic = $('#nic').val().trim();
+    let district = $('#district').val();
     let role = $('#role').val();
-    let password = $('#password').val();
+    let password = $('#password').val().trim();
+
+    if (!fullName || !email || !nic || !district || !role || !password) {
+      alert("Please fill in all fields");
+      return;
+    }
 
     $.ajax({
       url: 'http://localhost:8080/api/v1/auth/signup',
@@ -130,22 +294,31 @@
         fullName: fullName,
         userName: email,
         nic: nic,
-        district: district, // Backend එකට යවන දත්ත වලට එකතු කළා
+        district: district,
         role: role,
         password: password
       }),
       success: function(response) {
-        // Backend එකෙන් සාමාන්‍යයෙන් 201 එන්නේ සාර්ථක වුණාමයි
         if (response.code === 200 || response.code === 201) {
-          alert("Registration Successful!");
+          alert("🎉 Registration Successful!\n\nPlease login with your credentials.");
           window.location.href = "login.html";
         } else {
-          alert("Registration Failed: " + response.message);
+          alert("Registration Failed: " + (response.message || "Please try again"));
         }
       },
       error: function(xhr) {
-        console.error("Status:", xhr.status);
-        alert("Error " + xhr.status + ": Registration failed. Check if NIC/Email already exists.");
+        console.error(xhr);
+        let errorMsg = "Registration failed. ";
+
+        if (xhr.responseJSON && xhr.responseJSON.message) {
+          errorMsg += xhr.responseJSON.message;
+        } else if (xhr.status === 409) {
+          errorMsg += "Email or NIC already exists.";
+        } else {
+          errorMsg += "Please check your information and try again.";
+        }
+
+        alert(errorMsg);
       }
     });
   }

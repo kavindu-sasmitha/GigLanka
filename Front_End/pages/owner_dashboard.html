@@ -4,48 +4,220 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GigLanka | Owner Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
-    body { margin: 0; font-family: 'Inter', sans-serif; background: #0f172a; color: white; min-height: 100vh; }
-    .sidebar { height: 100vh; background: rgba(30, 41, 59, 0.5); backdrop-filter: blur(10px); border-right: 1px solid rgba(255, 255, 255, 0.1); position: fixed; width: 260px; padding: 30px 20px; }
-    .main-content { margin-left: 260px; padding: 40px; }
-    .glass-card { background: rgba(30, 41, 59, 0.7); padding: 25px; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); margin-bottom: 25px; }
-    #map { height: 300px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #334155; filter: grayscale(0.5) invert(0.9) hue-rotate(180deg); }
-    input, select { background: #1e293b !important; border: 1px solid #334155 !important; color: white !important; border-radius: 8px !important; }
-    .btn-publish { background: #10b981; border: none; border-radius: 8px; padding: 12px; font-weight: 600; color: white; }
-    .table-dark { --bs-table-bg: transparent; border-color: rgba(255,255,255,0.1); }
+    :root {
+      --primary: #10b981;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: #f8fafc;
+      color: #1e2937;
+      min-height: 100vh;
+    }
+
+    /* Sidebar - Clean White */
+    .sidebar {
+      height: 100vh;
+      background: white;
+      border-right: 1px solid #e2e8f0;
+      position: fixed;
+      width: 280px;
+      padding: 32px 24px;
+      box-shadow: 2px 0 15px rgba(0, 0, 0, 0.05);
+      z-index: 1000;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 40px;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: 700;
+      color: #0f172a;
+      letter-spacing: -1px;
+    }
+
+    .sri-lanka-flag {
+      width: 38px;
+      height: 25px;
+      background: linear-gradient(to right, #ff0000 40%, #ffcc00 40%);
+      border: 1px solid #e2e8f0;
+      position: relative;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .sri-lanka-flag::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(15deg);
+      width: 12px;
+      height: 12px;
+      background: #006600;
+      border-radius: 50%;
+    }
+
+    .nav-link {
+      color: #475569;
+      padding: 14px 20px;
+      border-radius: 12px;
+      margin-bottom: 6px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 500;
+      font-size: 15.5px;
+    }
+
+    .nav-link:hover {
+      background: #f1f5f9;
+      color: var(--primary);
+    }
+
+    .nav-link.active {
+      background: #ecfdf5;
+      color: var(--primary);
+      font-weight: 600;
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+    }
+
+    /* Main Content */
+    .main-content {
+      margin-left: 280px;
+      padding: 40px 50px;
+    }
+
+    .glass-card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+      margin-bottom: 30px;
+    }
+
+    h5, h6 {
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    /* Map */
+    #map {
+      height: 320px;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
+      margin-bottom: 20px;
+    }
+
+    /* Form Inputs */
+    input, select {
+      background: white !important;
+      border: 1px solid #e2e8f0 !important;
+      color: #1e2937 !important;
+      border-radius: 12px !important;
+      padding: 12px 16px;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--primary) !important;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+    }
+
+    .btn-publish {
+      background: linear-gradient(135deg, #10b981, #34d399);
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      font-weight: 600;
+      color: white;
+      font-size: 15px;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.25);
+    }
+
+    .btn-publish:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.35);
+    }
+
+    /* Tables */
+    .table {
+      color: #1e2937;
+    }
+
+    .table th {
+      color: #64748b;
+      font-weight: 500;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .badge {
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-weight: 500;
+      font-size: 13px;
+    }
+
+    /* Card Hover Effects */
+    .glass-card:hover {
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+    }
   </style>
 </head>
 <body>
 
 <div class="sidebar">
-  <h3 class="fw-bold mb-2" style="color: #10b981;">GigLanka</h3>
-  <p id="welcomeName" class="small mb-5 text-secondary"></p>
+  <div class="logo-container">
+    <div class="sri-lanka-flag"></div>
+    <div>
+      <span class="logo">GigLanka</span>
+    </div>
+  </div>
+
+  <p id="welcomeName" class="small mb-5 text-muted fw-medium"></p>
+
   <nav class="nav flex-column">
-    <a class="nav-link active" style="color: #10b981;"><i class="fas fa-th-large me-2"></i> Dashboard</a>
-    <a class="nav-link text-danger mt-5" onclick="logout()" style="cursor: pointer;"><i class="fas fa-sign-out-alt me-2"></i> Logout</a>
+    <a class="nav-link active"><i class="fas fa-th-large me-2"></i> Dashboard</a>
+    <div class="mt-auto pt-5">
+      <a class="nav-link text-danger" onclick="logout()" style="cursor: pointer;">
+        <i class="fas fa-sign-out-alt me-2"></i> Logout
+      </a>
+    </div>
   </nav>
 </div>
 
 <div class="main-content">
   <div class="row">
     <div class="col-lg-7">
+      <!-- Post New Task -->
       <div class="glass-card">
-        <h5><i class="fas fa-rocket text-success me-2"></i> Post a New Task</h5>
+        <h5 class="mb-4"><i class="fas fa-rocket text-success me-3"></i> Post a New Task</h5>
         <div id="map"></div>
+
         <form id="taskForm">
           <div class="row g-3">
-            <div class="col-12"><input type="text" id="taskTitle" class="form-control" placeholder="Task Title"></div>
             <div class="col-12">
-              <input type="tel" id="contactNo" class="form-control" placeholder="Contact Phone Number (e.g. 0771234567)">
+              <input type="text" id="taskTitle" class="form-control" placeholder="Task Title (e.g. Need help with gardening)">
+            </div>
+            <div class="col-12">
+              <input type="tel" id="contactNo" class="form-control" placeholder="Contact Phone Number (0771234567)">
             </div>
 
             <div class="col-md-6">
-              <label for="district" class="form-label text-white-50 small">Select District</label>
-              <select id="district" class="form-select bg-dark text-white border-secondary">
+              <label class="form-label text-muted small">District</label>
+              <select id="district" class="form-select">
                 <option value="" selected disabled>Choose District...</option>
                 <option value="Ampara">Ampara</option>
                 <option value="Anuradhapura">Anuradhapura</option>
@@ -74,53 +246,93 @@
                 <option value="Vavuniya">Vavuniya</option>
               </select>
             </div>
-            <div class="col-md-6"><input type="number" id="budget" class="form-control" placeholder="Budget LKR"></div>
-            <div class="col-12"><button type="button" class="btn btn-publish w-100" onclick="saveTask()">Publish Task</button></div>
+
+            <div class="col-md-6">
+              <label class="form-label text-muted small">Budget (LKR)</label>
+              <input type="number" id="budget" class="form-control" placeholder="e.g. 4500">
+            </div>
+
+            <div class="col-12">
+              <button type="button" class="btn btn-publish w-100" onclick="saveTask()">
+                <i class="fas fa-paper-plane me-2"></i> Publish Task
+              </button>
+            </div>
           </div>
         </form>
       </div>
 
+      <!-- My Posted Tasks -->
       <div class="glass-card">
-        <h6>My Posted Tasks</h6>
-        <table class="table table-dark table-hover mt-3">
-          <thead><tr><th>Title</th><th>Budget</th><th>Status</th><th>Actions</th></tr></thead>
-          <tbody id="myTaskTableBody"></tbody>
-        </table>
+        <h6 class="mb-3">My Posted Tasks</h6>
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead>
+            <tr>
+              <th>Title</th>
+              <th>Budget</th>
+              <th>Status</th>
+              <th class="text-end">Actions</th>
+            </tr>
+            </thead>
+            <tbody id="myTaskTableBody"></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
     <div class="col-lg-5">
+      <!-- Release Payments -->
       <div class="glass-card">
-        <h5 class="text-info mb-4"><i class="fas fa-check-double me-2"></i> Release Payments</h5>
+        <h5 class="mb-4 text-success">
+          <i class="fas fa-check-double me-2"></i> Release Payments
+        </h5>
         <div id="ongoingTaskArea">
-          <p class="small text-muted">Tasks accepted via Flash Match will appear here for payment release.</p>
+          <p class="small text-muted text-center py-4">Tasks accepted via Flash Match will appear here for payment release.</p>
         </div>
       </div>
 
+      <!-- Transaction History -->
       <div class="glass-card">
-        <h5 class="text-warning mb-4"><i class="fas fa-history me-2"></i> Transaction History</h5>
+        <h5 class="mb-4 text-warning">
+          <i class="fas fa-history me-2"></i> Transaction History
+        </h5>
         <div class="table-responsive">
-          <table class="table table-dark table-hover" style="font-size: 12px;">
+          <table class="table table-hover align-middle" style="font-size: 13px;">
             <thead>
-            <tr><th>Date</th><th>Task</th><th>Amount</th><th>Status</th></tr>
+            <tr>
+              <th>Date</th>
+              <th>Task</th>
+              <th>Amount</th>
+              <th>Status</th>
+            </tr>
             </thead>
             <tbody id="transactionTableBody"></tbody>
           </table>
         </div>
       </div>
 
+      <!-- Incoming Applications -->
       <div class="glass-card">
-        <h6>Incoming Applications</h6>
-        <table class="table table-dark table-hover" style="font-size: 13px;">
-          <thead><tr><th>Task Info</th><th>Emp ID</th><th>Action</th></tr></thead>
-          <tbody id="appTableBody"></tbody>
-        </table>
+        <h6 class="mb-3">Incoming Applications</h6>
+        <div class="table-responsive">
+          <table class="table table-hover align-middle" style="font-size: 13.5px;">
+            <thead>
+            <tr>
+              <th>Task Info</th>
+              <th>Employee</th>
+              <th class="text-end">Action</th>
+            </tr>
+            </thead>
+            <tbody id="appTableBody"></tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
   const map = L.map('map').setView([6.9271, 79.8612], 13);
@@ -131,7 +343,10 @@
   const ownerId = localStorage.getItem('owner_id');
 
   $(document).ready(() => {
-    if (!token) { window.location.href = "login.html"; return; }
+    if (!token) {
+      window.location.href = "login.html";
+      return;
+    }
     getAllTasksByUserId();
     loadApplications();
     loadTransactionHistory();
@@ -145,11 +360,18 @@
       title: $("#taskTitle").val(),
       district: $("#district").val(),
       budget: parseFloat($("#budget").val()),
-      latitude: pos.lat, longitude: pos.lng,
+      latitude: pos.lat,
+      longitude: pos.lng,
       ownerId: parseInt(ownerId),
       phoneNumber: $("#contactNo").val(),
       status: "PENDING"
     };
+
+    if (!data.title || !data.district || !data.budget) {
+      alert("Please fill all required fields!");
+      return;
+    }
+
     $.ajax({
       url: 'http://localhost:8080/api/v1/task',
       method: 'POST',
@@ -157,10 +379,12 @@
       contentType: 'application/json',
       data: JSON.stringify(data),
       success: () => {
-        alert("Published Successfully!");
+        alert("Task Published Successfully!");
         getAllTasksByUserId();
         $("#taskForm")[0].reset();
-      }
+        marker.setLatLng([6.9271, 79.8612]);
+      },
+      error: () => alert("Failed to publish task.")
     });
   }
 
@@ -172,59 +396,77 @@
       success: (res) => {
         let rows = "";
         let ongoingHtml = "";
-        res.data.forEach(task => {
-          rows += `<tr><td>${task.title}</td><td>LKR ${task.budget}</td><td><span class="badge bg-secondary">${task.status}</span></td><td><button class="btn btn-sm btn-danger" onclick="deleteTask(${task.id})"><i class="fas fa-trash"></i></button></td></tr>`;
+
+        const tasks = res.data || res;
+        tasks.forEach(task => {
+          const statusClass = task.status === 'PENDING' ? 'bg-warning text-dark' :
+                  task.status === 'ONGOING' ? 'bg-success' : 'bg-secondary';
+
+          rows += `<tr>
+                    <td>${task.title}</td>
+                    <td>LKR ${task.budget}</td>
+                    <td><span class="badge ${statusClass}">${task.status}</span></td>
+                    <td class="text-end">
+                      <button class="btn btn-sm btn-outline-danger" onclick="deleteTask(${task.id})">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>`;
 
           if(task.status === "ONGOING") {
-            ongoingHtml += `<div class="p-3 mb-2 border rounded" style="background: #1e293b; border-color: #3b82f6 !important;">
-                          <div class="d-flex justify-content-between align-items-center">
-                              <span>${task.title} <br><small class="text-muted">Budget: LKR ${task.budget}</small></span>
-                              <button class="btn btn-sm btn-success" onclick="completeAndPay(${task.id})">Release 98%</button>
-                          </div>
-                      </div>`;
+            ongoingHtml += `
+              <div class="p-3 mb-3 border rounded bg-light">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <strong>${task.title}</strong><br>
+                    <small class="text-muted">Budget: LKR ${task.budget}</small>
+                  </div>
+                  <button class="btn btn-sm btn-success" onclick="completeAndPay(${task.id})">
+                    Release Payment
+                  </button>
+                </div>
+              </div>`;
           }
         });
-        $("#myTaskTableBody").html(rows);
-        $("#ongoingTaskArea").html(ongoingHtml || "<p class='small text-muted text-center'>No ongoing tasks found.</p>");
+
+        $("#myTaskTableBody").html(rows || `<tr><td colspan="4" class="text-center text-muted py-4">No tasks posted yet.</td></tr>`);
+        $("#ongoingTaskArea").html(ongoingHtml || `<p class="small text-muted text-center py-4">No ongoing tasks for payment release.</p>`);
       }
     });
   }
 
   function loadApplications() {
-    if (!ownerId || !token) return;
-
     $.ajax({
       url: `http://localhost:8080/api/v1/application/${ownerId}`,
       method: 'GET',
       headers: { "Authorization": "Bearer " + token },
       success: function(res) {
         let rows = "";
-        const data = res.data || res; // Backend එකෙන් එන විදිහ අනුව handle කරන්න
+        const data = res.data || res;
 
         if (data && data.length > 0) {
           data.forEach(app => {
-            // මෙන්න මෙතනදී PENDING ඒව විතරක් පෙන්වන්න filter එකක් දාන්න
             if (app.status === 'PENDING') {
               rows += `<tr>
-                        <td>${app.title}</td>
-                        <td>Employee ID: ${app.employee_id}</td>
-                        <td>
-                             <button class="btn btn-sm btn-success me-1" onclick="changeStatus(${app.id}, 'ACCEPTED', ${app.task_id}, ${app.employee_id})">Accept</button>
-                             <button class="btn btn-sm btn-danger" onclick="changeStatus(${app.id}, 'REJECTED', ${app.task_id}, ${app.employee_id})">Reject</button>
+                        <td><small>${app.title}</small></td>
+                        <td>Emp ID: ${app.employee_id}</td>
+                        <td class="text-end">
+                          <button class="btn btn-sm btn-success me-1" onclick="changeStatus(${app.id}, 'ACCEPTED', ${app.task_id}, ${app.employee_id})">Accept</button>
+                          <button class="btn btn-sm btn-danger" onclick="changeStatus(${app.id}, 'REJECTED', ${app.task_id}, ${app.employee_id})">Reject</button>
                         </td>
-                    </tr>`;
+                      </tr>`;
             }
           });
         }
 
-        // Rows මොකුත් හැදුනේ නැත්නම් (හිස් නම්) මේ message එක පෙන්වනවා
-        $("#appTableBody").html(rows || "<tr><td colspan='3' class='text-center text-muted'>No pending applications found.</td></tr>");
+        $("#appTableBody").html(rows || `<tr><td colspan="3" class="text-center text-muted py-4">No pending applications found.</td></tr>`);
       }
     });
   }
 
   function completeAndPay(taskId) {
-    if(!confirm("Are you sure? This will release the payment to the student's wallet.")) return;
+    if(!confirm("Release payment to the worker? This action cannot be undone.")) return;
+
     $.ajax({
       url: `http://localhost:8080/api/v1/task/complete/${taskId}`,
       method: 'POST',
@@ -239,47 +481,44 @@
 
   function loadTransactionHistory() {
     $.ajax({
-      url: `http://localhost:8080/api/v1/transactions`, // The new endpoint we created
+      url: `http://localhost:8080/api/v1/transactions/${ownerId}`,
       method: 'GET',
       headers: { 'Authorization': 'Bearer ' + token },
       success: (data) => {
-        // Logic to populate your table/UI
-        $('#transactionTableBody').empty();
+        let rows = "";
         data.forEach(tx => {
-          $('#transactionTableBody').append(`
-                    <tr>
-                        <td>${tx.taskId}</td>
-                        <td>Rs. ${tx.totalBudget}</td>
-                        <td class="text-danger">Rs. ${tx.systemFee}</td>
-                        <td class="text-success">Rs. ${tx.studentEarned}</td>
-                        <td>${new Date(tx.timestamp).toLocaleString()}</td>
-                    </tr>
-                `);
+          rows += `
+            <tr>
+              <td>${new Date(tx.timestamp).toLocaleDateString()}</td>
+              <td><small>${tx.taskId || 'Task'}</small></td>
+              <td class="text-end">Rs. ${tx.totalBudget || 0}</td>
+              <td><span class="badge bg-success">Completed</span></td>
+            </tr>`;
         });
+        $("#transactionTableBody").html(rows || `<tr><td colspan="4" class="text-center text-muted py-4">No transactions yet.</td></tr>`);
       }
     });
   }
+
   function deleteTask(id) {
     if(confirm("Delete this task?")) {
-      $.ajax({ url: `http://localhost:8080/api/v1/task/${id}`, method: 'DELETE', headers: { 'Authorization': 'Bearer ' + token }, success: () => getAllTasksByUserId() });
+      $.ajax({
+        url: `http://localhost:8080/api/v1/task/${id}`,
+        method: 'DELETE',
+        headers: { 'Authorization': 'Bearer ' + token },
+        success: () => getAllTasksByUserId()
+      });
     }
   }
 
-  function getStatusBadge(status) {
-    if(status === 'ACCEPTED') return 'bg-success';
-    if(status === 'REJECTED') return 'bg-danger';
-    return 'bg-secondary';
-  }
   function changeStatus(appId, status, taskId, empId) {
-    if(!confirm(`Are you sure you want to ${status.toLowerCase()} this?`)) return;
+    if(!confirm(`Are you sure you want to ${status.toLowerCase()} this application?`)) return;
 
-    // 1. Application එකේ status එක update කිරීම (Accepted/Rejected)
     $.ajax({
       url: `http://localhost:8080/api/v1/application/${appId}?status=${status}`,
       method: 'PATCH',
       headers: { 'Authorization': 'Bearer ' + token },
       success: () => {
-        // 2. පිළිගත්තේ නම් (ACCEPTED), Task එක ONGOING කිරීමට Controller එක call කරයි
         if(status === 'ACCEPTED') {
           $.ajax({
             url: `http://localhost:8080/api/v1/task/accept/${taskId}/${empId}`,
@@ -294,14 +533,15 @@
         } else {
           alert("Application Rejected!");
           loadApplications();
-          loadApplications();
         }
-      },
-      error: (xhr) => alert("Failed to update status: " + xhr.status)
+      }
     });
   }
 
-  function logout() { localStorage.clear(); window.location.href = "login.html"; }
+  function logout() {
+    localStorage.clear();
+    window.location.href = "login.html";
+  }
 </script>
 </body>
 </html>

@@ -1,0 +1,7 @@
+package edu.lk.ijse.back_end.exception;
+
+public class NotFoundException extends RuntimeException {
+    public NotFoundException(String message) {
+        super(message);
+    }
+}

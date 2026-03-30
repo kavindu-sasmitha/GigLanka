@@ -19,7 +19,7 @@ public class Task {
     private long id;
     private String title;
     private double budget;
-    private String district; // New: For Local Proximity
+    private String district;
     private double latitude;
     private double phoneNumber;
     private double longitude;

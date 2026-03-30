@@ -21,9 +21,7 @@ public class JwtUtil {
     @Value("${jwt.secretKey}")
     private String secretKey;
 
-    /**
-     * Token එක සාදන අවස්ථාවේදීම User ගේ Role එක claim එකක් ලෙස ඇතුළත් කිරීම.
-     */
+
     public String generateToken(String username, String role) {
         return Jwts.builder()
                 .setSubject(username)
@@ -34,24 +32,18 @@ public class JwtUtil {
                 .compact();
     }
 
-    /**
-     * Token එකෙන් Username (Subject) ලබා ගැනීම
-     */
+
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
-    /**
-     * Token එකෙන් Role එක ලබා ගැනීම (Backend එකේදී පරීක්ෂා කිරීමට)
-     */
+
     public String extractRole(String token) {
         final Claims claims = extractAllClaims(token);
         return claims.get("role", String.class);
     }
 
-    /**
-     * ඕනෑම claim එකක් generic ආකාරයට ලබා ගැනීම
-     */
+
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
@@ -65,16 +57,12 @@ public class JwtUtil {
                 .getBody();
     }
 
-    /**
-     * Token එකේ කාලය ඉකුත් වී ඇත්දැයි බැලීම
-     */
+
     public boolean isTokenExpired(String token) {
         return extractClaim(token, Claims::getExpiration).before(new Date());
     }
 
-    /**
-     * Token එක වලංගු බව සහතික කිරීම
-     */
+
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()

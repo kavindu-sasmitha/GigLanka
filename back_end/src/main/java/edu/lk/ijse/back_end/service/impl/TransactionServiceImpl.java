@@ -5,6 +5,7 @@ import edu.lk.ijse.back_end.entity.Task;
 import edu.lk.ijse.back_end.entity.Transaction;
 import edu.lk.ijse.back_end.entity.User;
 import edu.lk.ijse.back_end.entity.enums.TaskStatus;
+import edu.lk.ijse.back_end.exception.NotFoundException;
 import edu.lk.ijse.back_end.repo.TaskRepo;
 import edu.lk.ijse.back_end.repo.TransactionRepo;
 import edu.lk.ijse.back_end.repo.UserRepo;
@@ -26,13 +27,25 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Autowired
     private ModelMapper modelMapper;
+
     @Autowired
     private TaskRepo taskRepo;
+
     @Autowired
     private UserRepo userRepo;
 
     @Override
     public void createTransaction(long taskId, double budget) {
+
+        if (!taskRepo.existsById(taskId)) {
+            throw new NotFoundException("Cannot create transaction. Task not found with ID: " + taskId);
+        }
+
+
+        if (budget <= 0) {
+            throw new IllegalArgumentException("Budget must be greater than zero");
+        }
+
         double systemFee = budget * 0.02;
         double studentPay = budget * 0.98;
 
@@ -45,10 +58,12 @@ public class TransactionServiceImpl implements TransactionService {
         transactionRepo.save(tx);
     }
 
-
     @Override
     public List<TransactionDto> getAllTransactions() {
-        return transactionRepo.findAll().stream()
+        List<Transaction> transactions = transactionRepo.findAll();
+
+
+        return transactions.stream()
                 .map(tx -> modelMapper.map(tx, TransactionDto.class))
                 .collect(Collectors.toList());
     }

@@ -6,6 +6,7 @@ import edu.lk.ijse.back_end.entity.Task;
 import edu.lk.ijse.back_end.entity.TaskApplication;
 import edu.lk.ijse.back_end.entity.User;
 import edu.lk.ijse.back_end.entity.enums.ApplicationStatus;
+import edu.lk.ijse.back_end.exception.NotFoundException;
 import edu.lk.ijse.back_end.repo.TaskApplicationRepo;
 import edu.lk.ijse.back_end.repo.TaskRepo;
 import edu.lk.ijse.back_end.repo.UserRepo;
@@ -31,11 +32,12 @@ public class TaskApplicationServiceImpl implements TaskApplicationService {
 
     @Override
     public void saveApplication(TaskApplicationDto dto) {
-        // Task එක සහ User එක database එකෙන් හොයාගන්නවා
+        // RuntimeException වෙනුවට NotFoundException භාවිතා කරන ලදී
         Task task = taskRepository.findById(dto.getTask_id())
-                .orElseThrow(() -> new RuntimeException("Task not found"));
+                .orElseThrow(() -> new NotFoundException("Task not found with ID: " + dto.getTask_id()));
+
         User user = userRepository.findById(dto.getEmployee_id())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found with ID: " + dto.getEmployee_id()));
 
         TaskApplication application = new TaskApplication();
         application.setTask(task);
@@ -69,39 +71,49 @@ public class TaskApplicationServiceImpl implements TaskApplicationService {
 
     @Override
     public void updateStatus(long id, String status) {
+        // Application එක නැති විට Custom NotFoundException එක throw කරයි
         TaskApplication app = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Application not found"));
-        app.setStatus(ApplicationStatus.valueOf(status.toUpperCase()));
+                .orElseThrow(() -> new NotFoundException("Application not found with ID: " + id));
+
+        try {
+            app.setStatus(ApplicationStatus.valueOf(status.toUpperCase()));
+        } catch (IllegalArgumentException e) {
+            // වැරදි Status එකක් එවුවොත් handle කිරීමට (Optional)
+            throw new RuntimeException("Invalid status provided: " + status);
+        }
+
         repository.save(app);
     }
 
     @Override
     public void deleteApplication(long id) {
+        // Delete කිරීමට පෙර id එක තියෙනවද බලන්න පුළුවන් (Safe practice)
+        if (!repository.existsById(id)) {
+            throw new NotFoundException("Cannot delete. Application not found with ID: " + id);
+        }
         repository.deleteById(id);
     }
 
     @Override
     public List<TaskApplicationDto> getAllTasksByOwnerId(long ownerId) {
-        // 1. Owner ge tasks walata adalawa thiyena applications tika gannawa
+
         List<TaskApplication> applyTaskList = repository.findByTaskOwnerId(ownerId);
 
         return applyTaskList.stream().map(taskApplication -> {
             TaskApplicationDto dto = new TaskApplicationDto();
 
-            // Database record eke ID eka (Meka thamai Cancel/Delete karanna ona ID eka)
+
             dto.setId(taskApplication.getId());
             dto.setStatus(taskApplication.getStatus().toString());
 
-            // Task Details
+
             if (taskApplication.getTask() != null) {
                 dto.setTask_id(taskApplication.getTask().getId());
-                dto.setTitle(taskApplication.getTask().getTitle()); // Task eke nam set karanna
+                dto.setTitle(taskApplication.getTask().getTitle());
             }
 
-            // Employee (Apply karapu kenage) Details
             if (taskApplication.getEmployee() != null) {
                 dto.setEmployee_id(taskApplication.getEmployee().getId());
-                 // Employee ge nama set karanna
             }
 
             return dto;

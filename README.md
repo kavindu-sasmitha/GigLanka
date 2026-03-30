@@ -4,14 +4,14 @@
 
 ---
 
-## 📺 Project Demonstration
-Click the image below to watch the full technical walkthrough and system demo on YouTube:
+# 📺 Project Demonstration (Video)
+Click the image below to watch the full system demonstration and technical explanation:
 
-[![GigLanka Demo Video](https://youtu.be/YG-UORLdWyg?si=AR2OpVFqQvJgosM0)](https://www.youtube.com/watch?v=https://youtu.be/YG-UORLdWyg?si=AR2OpVFqQvJgosM0)
-> *Replace **YOUR_VIDEO_ID_HERE** with your actual YouTube video ID.*
+[![Watch the video](https://img.youtu.be/f4R4Lx3AIug/0.jpg)](https://youtu.be/f4R4Lx3AIug)
+
+> **Note:** If the link above doesn't work, [Click Here](https://youtu.be/f4R4Lx3AIug) to watch the video on YouTube.
 
 ---
-
 ## 🚀 Key Features
 
 * **Flash Match Confirmation:** First-come, first-served task assignment to ensure speed and efficiency.

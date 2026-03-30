@@ -2,183 +2,319 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GigLanka | Employee Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>GigLanka | Employee Dashboard - Find Part-Time Jobs in Sri Lanka</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         :root {
-            --primary: #10b981;
+            --primary: #0f8b4c;
+            --primary-light: #2cbb6e;
+            --primary-dark: #0a6a3a;
+            --secondary: #f59e0b;
+            --bg-light: #f9fafb;
+            --border-light: #eef2f0;
+            --text-dark: #1e2a2e;
+            --text-muted: #5b6e5c;
         }
 
         body {
-            margin: 0;
             font-family: 'Inter', sans-serif;
-            background: #f8fafc;
-            color: #1e2937;
+            background: linear-gradient(145deg, #f4f8f4 0%, #e9f0e6 100%);
+            color: var(--text-dark);
             min-height: 100vh;
         }
 
+        /* Sidebar - Modern Sri Lankan inspired */
         .sidebar {
             height: 100vh;
-            background: white;
-            border-right: 1px solid #e2e8f0;
+            background: linear-gradient(180deg, #ffffff 0%, #fefef7 100%);
+            border-right: none;
             position: fixed;
-            width: 280px;
-            padding: 32px 24px;
-            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.05);
+            width: 290px;
+            padding: 32px 20px;
+            box-shadow: 8px 0 28px rgba(0, 0, 0, 0.04);
             z-index: 1000;
+            backdrop-filter: blur(2px);
         }
 
         .logo-container {
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 50px;
-        }
-
-        .sri-lanka-flag {
-            width: 38px;
-            height: 25px;
-            background: linear-gradient(to right, #ff0000 40%, #ffcc00 40%);
-            border: 1px solid #e2e8f0;
+            margin-bottom: 48px;
+            padding-left: 8px;
             position: relative;
-            border-radius: 3px;
-            overflow: hidden;
         }
 
-        .sri-lanka-flag::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(15deg);
-            width: 12px;
-            height: 12px;
-            background: #006600;
-            border-radius: 50%;
+        .flag-emblem {
+            width: 44px;
+            height: 32px;
+            background: linear-gradient(135deg, #e3532e 0%, #e68a2e 100%);
+            border-radius: 10px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .flag-emblem::after {
+            content: "🦁";
+            font-size: 20px;
+            color: #f5c542;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
         }
 
         .logo {
             font-size: 28px;
-            font-weight: 700;
-            color: #0f172a;
-            letter-spacing: -1px;
+            font-weight: 800;
+            background: linear-gradient(125deg, #1a6e3f, #2e9c58);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
         }
 
         .nav-link {
-            color: #475569;
+            color: #4a5b4a;
             padding: 14px 20px;
-            border-radius: 12px;
-            margin-bottom: 8px;
+            border-radius: 16px;
+            margin-bottom: 6px;
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
             font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link i {
+            width: 24px;
+            font-size: 1.2rem;
         }
 
         .nav-link:hover, .nav-link.active {
-            background: #ecfdf5;
-            color: var(--primary);
+            background: linear-gradient(95deg, #eaf9f0, #dff1e4);
+            color: var(--primary-dark);
             font-weight: 600;
         }
 
         .nav-link.active {
-            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+            border-left: 4px solid var(--primary);
+            background: #eef7f2;
         }
 
+        .logout-link {
+            margin-top: 60px;
+            border-top: 1px solid var(--border-light);
+            padding-top: 20px;
+        }
+
+        /* Main content */
         .main-content {
-            margin-left: 280px;
-            padding: 40px 50px;
+            margin-left: 290px;
+            padding: 32px 40px;
         }
 
+        /* Cards & Glassmorphism */
         .glass-card {
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 20px;
-            padding: 32px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
-            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(2px);
+            border: 1px solid rgba(16, 185, 129, 0.15);
+            border-radius: 28px;
+            padding: 28px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .glass-card:hover {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .earnings-card {
+            background: linear-gradient(125deg, #1b6e41, #2c9c5a);
+            border: none;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .earnings-card::after {
+            content: "₨";
+            font-size: 90px;
+            position: absolute;
+            bottom: -20px;
+            right: 10px;
+            opacity: 0.12;
+            font-weight: 800;
         }
 
         #map {
-            height: 420px;
-            border-radius: 16px;
-            border: 1px solid #e2e8f0;
+            height: 380px;
+            border-radius: 24px;
+            border: none;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            z-index: 1;
         }
 
+        /* Task Cards */
         .task-card {
             background: white;
-            border: 1px solid #e2e8f0;
-            padding: 20px;
-            border-radius: 16px;
+            border: 1px solid #e8f0ea;
+            padding: 20px 22px;
+            border-radius: 24px;
             margin-bottom: 16px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+            transition: all 0.25s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
         }
 
         .task-card:hover {
-            border-color: var(--primary);
-            transform: translateY(-4px);
+            border-color: var(--primary-light);
+            transform: translateY(-3px);
+            box-shadow: 0 16px 28px -12px rgba(15, 139, 76, 0.2);
         }
 
         .btn-apply {
-            background: linear-gradient(135deg, #10b981, #34d399);
+            background: linear-gradient(105deg, var(--primary), var(--primary-light));
             border: none;
-            border-radius: 12px;
-            padding: 12px 26px;
+            border-radius: 40px;
+            padding: 10px 28px;
             font-weight: 600;
+            font-size: 0.85rem;
             color: white;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.25);
+            transition: all 0.2s;
+            box-shadow: 0 6px 14px rgba(15, 139, 76, 0.25);
+        }
+
+        .btn-apply:hover {
+            transform: scale(1.02);
+            background: linear-gradient(105deg, var(--primary-dark), var(--primary));
         }
 
         .btn-direction {
-            background: #2563eb;
+            background: #2c6e9e;
             border: none;
-            border-radius: 12px;
-            padding: 10px 20px;
+            border-radius: 32px;
+            padding: 7px 18px;
             color: white;
             text-decoration: none;
+            font-size: 0.75rem;
+            font-weight: 500;
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            font-size: 14px;
         }
 
-        .badge {
+        .btn-direction:hover {
+            background: #1f5379;
+            color: white;
+        }
+
+        .badge-custom {
             padding: 6px 14px;
-            border-radius: 50px;
-            font-size: 13px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .filter-select {
+            border-radius: 40px;
+            border: 1px solid #d4e2d4;
+            padding: 10px 20px;
+            font-weight: 500;
+            background: #ffffff;
+        }
+
+        h5 i, h6 i {
+            margin-right: 8px;
+            color: var(--primary);
+        }
+
+        .table {
+            font-size: 0.85rem;
+        }
+
+        .table th {
+            font-weight: 600;
+            color: #3c5a3e;
+            border-bottom-width: 1px;
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 240px;
+            }
+            .main-content {
+                margin-left: 240px;
+                padding: 24px 24px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                transition: 0.3s;
+            }
+            .main-content {
+                margin-left: 0;
+            }
         }
     </style>
 </head>
 <body>
 
+<!-- Sidebar - Professional Sri Lankan Identity -->
 <div class="sidebar">
     <div class="logo-container">
-        <div class="sri-lanka-flag"></div>
+        <div class="flag-emblem"></div>
         <span class="logo">GigLanka</span>
     </div>
 
     <nav class="nav flex-column">
-        <a class="nav-link active"><i class="fas fa-compass me-2"></i> Browse Tasks</a>
-        <a class="nav-link" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#completedTasksModal" onclick="loadCompletedTasks()">
-            <i class="fas fa-briefcase me-2"></i> My Applications
+        <a class="nav-link active" id="navBrowseTasks">
+            <i class="fas fa-compass"></i> Browse Tasks
         </a>
-        <div class="mt-auto pt-5">
-            <a class="nav-link text-danger" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i> Logout</a>
+        <a class="nav-link" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#completedTasksModal" onclick="loadCompletedTasks()">
+            <i class="fas fa-trophy"></i> Completed Gigs
+        </a>
+        <div class="logout-link">
+            <a class="nav-link text-danger" onclick="logout()" style="cursor: pointer;">
+                <i class="fas fa-sign-out-alt"></i> Sign Out
+            </a>
         </div>
     </nav>
 </div>
 
+<!-- Main Dashboard Content -->
 <div class="main-content">
     <div class="row mb-4">
         <div class="col-md-5">
-            <div class="glass-card text-center" style="border-left: 6px solid #10b981;">
-                <p class="text-muted small mb-1">My Earnings (98% Share)</p>
-                <h3 id="walletBalance" class="fw-bold text-success mb-0">LKR 0.00</h3>
+            <div class="glass-card earnings-card">
+                <p class="mb-1 opacity-75" style="font-weight: 500;"><i class="fas fa-wallet me-2"></i> My Earnings (98% Share)</p>
+                <h3 id="walletBalance" class="fw-bold mb-0" style="font-size: 2.5rem;">LKR 0.00</h3>
+                <small class="opacity-75">Total earned from completed tasks</small>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <div class="glass-card" style="background: #fefef5;">
+                <div class="d-flex align-items-center gap-3">
+                    <i class="fas fa-hand-peace fa-2x text-success"></i>
+                    <div>
+                        <h6 class="mb-0 fw-bold">Welcome back, <span id="userNameDisplay">Employee</span></h6>
+                        <p class="text-muted small mb-0">Find verified part-time jobs across Sri Lanka</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -186,34 +322,22 @@
     <div class="row">
         <div class="col-lg-8">
             <div class="glass-card">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h5><i class="fas fa-map-marked-alt text-success me-3"></i> Explore Available Gigs</h5>
-                    <select id="districtFilter" class="form-select w-50" onchange="filterTasks()">
-                        <option value="All">All Districts - Sri Lanka</option>
-                        <option value="Ampara">Ampara</option>
-                        <option value="Anuradhapura">Anuradhapura</option>
-                        <option value="Badulla">Badulla</option>
-                        <option value="Batticaloa">Batticaloa</option>
-                        <option value="Colombo">Colombo</option>
-                        <option value="Galle">Galle</option>
-                        <option value="Gampaha">Gampaha</option>
-                        <option value="Hambantota">Hambantota</option>
-                        <option value="Jaffna">Jaffna</option>
-                        <option value="Kalutara">Kalutara</option>
-                        <option value="Kandy">Kandy</option>
-                        <option value="Kegalle">Kegalle</option>
-                        <option value="Kilinochchi">Kilinochchi</option>
-                        <option value="Kurunegala">Kurunegala</option>
-                        <option value="Mannar">Mannar</option>
-                        <option value="Matale">Matale</option>
-                        <option value="Matara">Matara</option>
-                        <option value="Moneragala">Moneragala</option>
-                        <option value="Mullaitivu">Mullaitivu</option>
-                        <option value="Nuwara Eliya">Nuwara Eliya</option>
-                        <option value="Polonnaruwa">Polonnaruwa</option>
-                        <option value="Puttalam">Puttalam</option>
-                        <option value="Ratnapura">Ratnapura</option>
-                        <option value="Trincomalee">Trincomalee</option>
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                    <h5 class="mb-0"><i class="fas fa-map-marked-alt text-success"></i> Explore Gigs Near You</h5>
+                    <select id="districtFilter" class="form-select filter-select w-auto" onchange="filterTasks()" style="min-width: 180px;">
+                        <option value="All">📍 All Districts</option>
+                        <option value="Ampara">Ampara</option><option value="Anuradhapura">Anuradhapura</option>
+                        <option value="Badulla">Badulla</option><option value="Batticaloa">Batticaloa</option>
+                        <option value="Colombo">Colombo</option><option value="Galle">Galle</option>
+                        <option value="Gampaha">Gampaha</option><option value="Hambantota">Hambantota</option>
+                        <option value="Jaffna">Jaffna</option><option value="Kalutara">Kalutara</option>
+                        <option value="Kandy">Kandy</option><option value="Kegalle">Kegalle</option>
+                        <option value="Kilinochchi">Kilinochchi</option><option value="Kurunegala">Kurunegala</option>
+                        <option value="Mannar">Mannar</option><option value="Matale">Matale</option>
+                        <option value="Matara">Matara</option><option value="Moneragala">Moneragala</option>
+                        <option value="Mullaitivu">Mullaitivu</option><option value="Nuwara Eliya">Nuwara Eliya</option>
+                        <option value="Polonnaruwa">Polonnaruwa</option><option value="Puttalam">Puttalam</option>
+                        <option value="Ratnapura">Ratnapura</option><option value="Trincomalee">Trincomalee</option>
                         <option value="Vavuniya">Vavuniya</option>
                     </select>
                 </div>
@@ -221,25 +345,23 @@
                 <div id="map"></div>
 
                 <div class="mt-4">
-                    <h6 class="mb-3">Available Tasks Near You</h6>
-                    <div id="taskList"></div>
+                    <h6 class="mb-3"><i class="fas fa-bolt"></i> Available Tasks</h6>
+                    <div id="taskList" style="max-height: 380px; overflow-y: auto; padding-right: 6px;"></div>
                 </div>
             </div>
         </div>
 
         <div class="col-lg-4">
             <div class="glass-card">
-                <h6 class="mb-3"><i class="fas fa-list-ul text-success me-2"></i> My Applications</h6>
-                <div class="table-responsive">
+                <h6 class="mb-3"><i class="fas fa-clipboard-list text-success"></i> My Applications</h6>
+                <div class="table-responsive" style="max-height: 520px; overflow-y: auto;">
                     <table class="table table-hover align-middle">
-                        <thead>
-                        <tr>
-                            <th>Task</th>
-                            <th>Status</th>
-                            <th class="text-end">Action</th>
-                        </tr>
+                        <thead class="table-light">
+                        <tr><th>Task</th><th>Status</th><th class="text-end">Action</th></tr>
                         </thead>
-                        <tbody id="employeeTaskTableBody"></tbody>
+                        <tbody id="employeeTaskTableBody">
+                        <tr><td colspan="3" class="text-center text-muted py-4">Loading applications...</td></tr>
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -249,20 +371,16 @@
 
 <!-- Completed Tasks Modal -->
 <div class="modal fade" id="completedTasksModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalLabel">
-                    <i class="fas fa-check-circle text-success me-2"></i> My Completed Tasks
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 28px;">
+            <div class="modal-header border-0 pt-4 px-4">
+                <h5 class="modal-title" id="modalLabel"><i class="fas fa-check-circle text-success me-2"></i>My Completed Gigs</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body px-4 pb-4">
                 <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                        <tr><th>Task Title</th><th>Status</th></tr>
-                        </thead>
+                    <table class="table">
+                        <thead><tr><th>Task Title</th><th>Status</th></tr></thead>
                         <tbody id="completedTaskTableBody"></tbody>
                     </table>
                 </div>
@@ -275,21 +393,25 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
+    // ========== ALL ORIGINAL VARIABLES & FUNCTIONS PRESERVED ==========
     let allTasks = [];
-    const map = L.map('map').setView([6.9271, 79.8612], 10);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    const map = L.map('map').setView([7.8731, 80.7718], 8);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 18
+    }).addTo(map);
     let markersLayer = L.layerGroup().addTo(map);
 
     const token = localStorage.getItem('jwtToken');
     const employeeId = localStorage.getItem('owner_id');
-    const employeeName = localStorage.getItem('full_name');
+    const employeeName = localStorage.getItem('full_name') || "Worker";
 
     $(document).ready(function() {
         if (!token) {
-            window.location.href = "../login.html";
+            window.location.href = "login.html";
             return;
         }
-
+        $("#userNameDisplay").text(employeeName.split(' ')[0] || employeeName);
         fetchWalletBalance();
         fetchAllTasks();
         getAllTasksByUserId();
@@ -304,7 +426,8 @@
                 let total = 0;
                 (transactions || []).forEach(tx => total += (tx.studentEarned || 0));
                 $("#walletBalance").text(`LKR ${total.toFixed(2)}`);
-            }
+            },
+            error: () => console.log("Wallet fetch skipped")
         });
     }
 
@@ -316,7 +439,8 @@
             success: function(res) {
                 allTasks = res.data || res || [];
                 filterTasks();
-            }
+            },
+            error: () => alert("Failed to load tasks. Check connection.")
         });
     }
 
@@ -330,25 +454,29 @@
             return (selectedDist === "All" || loc === selectedDist) && t.status === "PENDING";
         });
 
+        if(filtered.length === 0) {
+            $("#taskList").html(`<div class="alert alert-light text-center">✨ No gigs in ${selectedDist} right now. Try other districts!</div>`);
+        }
+
         filtered.forEach(task => {
-            const lat = parseFloat(task.latitude) || 6.9271;
-            const lng = parseFloat(task.longitude) || 79.8612;
-            const locName = task.locationName || task.district || "Unknown";
+            const lat = parseFloat(task.latitude) || 7.8731;
+            const lng = parseFloat(task.longitude) || 80.7718;
+            const locName = task.locationName || task.district || "Sri Lanka";
 
             L.marker([lat, lng]).addTo(markersLayer)
-                .bindPopup(`<b>${task.title}</b><br>LKR ${task.budget}`);
+                .bindPopup(`<b>${task.title}</b><br>💰 LKR ${task.budget}<br>📍 ${locName}`);
 
             $("#taskList").append(`
                 <div class="task-card">
-                    <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
                         <div>
-                            <h6 class="mb-1">${task.title}</h6>
+                            <h6 class="mb-1 fw-semibold">${escapeHtml(task.title)}</h6>
                             <p class="small text-muted mb-0">
-                                <i class="fas fa-coins me-1"></i> LKR ${task.budget || 0} |
-                                <i class="fas fa-map-marker-alt me-1"></i> ${locName}
+                                <i class="fas fa-coins text-success"></i> LKR ${task.budget || 0} &nbsp;|&nbsp;
+                                <i class="fas fa-map-marker-alt"></i> ${locName}
                             </p>
                         </div>
-                        <button class="btn-apply" onclick="applyTask(${task.id})">Flash Accept</button>
+                        <button class="btn-apply" onclick="applyTask(${task.id})">⚡ Apply Now</button>
                     </div>
                 </div>
             `);
@@ -361,7 +489,7 @@
             task_id: taskId,
             employee_id: parseInt(employeeId),
             full_name: employeeName,
-            title:taskId.title,
+            title: "Task Application",
             status: "PENDING"
         };
 
@@ -372,10 +500,10 @@
             headers: { 'Authorization': 'Bearer ' + token },
             data: JSON.stringify(applicationData),
             success: () => {
-                alert("✅ Applied successfully!");
+                alert("✅ Application sent successfully!");
                 getAllTasksByUserId();
             },
-            error: (xhr) => alert("Error: " + xhr.status)
+            error: (xhr) => alert("⚠️ " + (xhr.responseJSON?.message || "Apply failed"))
         });
     }
 
@@ -391,34 +519,27 @@
                 if (data.length > 0) {
                     data.forEach(app => {
                         let directionBtn = "";
-
-                        // FIXED: Properly check for direction button
                         if (app.status === 'ACCEPTED' || app.status === 'ONGOING') {
-                            const lat = parseFloat(app.latitude) || 6.9271;
-                            const lng = parseFloat(app.longitude) || 79.8612;
+                            const lat = parseFloat(app.latitude) || 7.8731;
+                            const lng = parseFloat(app.longitude) || 80.7718;
                             const googleMapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
-
-                            directionBtn = `
-                                <a href="${googleMapsUrl}" target="_blank" class="btn-direction" title="Get Directions">
-                                    <i class="fas fa-location-arrow"></i> Directions
-                                </a>`;
+                            directionBtn = `<a href="${googleMapsUrl}" target="_blank" class="btn-direction ms-2"><i class="fas fa-directions"></i> Route</a>`;
                         }
-
                         rows += `<tr>
-                            <td><small>${app.title || 'Task'}</small></td>
-                            <td><span class="badge ${getStatusColor(app.status)}">${app.status}</span></td>
+                            <td><small class="fw-medium">${escapeHtml(app.title || 'Task')}</small></td>
+                            <td><span class="badge-custom ${getStatusColor(app.status)}">${app.status}</span></td>
                             <td class="text-end">
-                                <div class="d-flex gap-2 justify-content-end">
+                                <div class="d-flex gap-1 justify-content-end">
                                     ${directionBtn}
-                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteApplyTask(${app.id})">
-                                        <i class="fas fa-times"></i>
+                                    <button class="btn btn-sm btn-outline-danger rounded-pill" onclick="deleteApplyTask(${app.id})">
+                                        <i class="fas fa-trash-alt"></i>
                                     </button>
                                 </div>
                             </td>
                         </tr>`;
                     });
                 } else {
-                    rows = `<tr><td colspan="3" class="text-center text-muted py-4">No applications found yet.</td></tr>`;
+                    rows = `<tr><td colspan="3" class="text-center text-muted py-4"><i class="fas fa-inbox me-2"></i>No applications yet</td></tr>`;
                 }
                 $("#employeeTaskTableBody").html(rows);
             }
@@ -432,7 +553,7 @@
                 method: 'DELETE',
                 headers: { 'Authorization': 'Bearer ' + token },
                 success: () => {
-                    alert("Cancelled successfully!");
+                    alert("Application cancelled");
                     getAllTasksByUserId();
                 }
             });
@@ -449,13 +570,10 @@
                 const taskList = tasks || [];
                 if (taskList.length > 0) {
                     taskList.forEach(task => {
-                        rows += `<tr>
-                            <td>${task.title}</td>
-                            <td><span class="badge bg-success">${task.status}</span></td>
-                         </tr>`;
+                        rows += `<tr><td>${escapeHtml(task.title)}</td><td><span class="badge-custom bg-success text-white">${task.status}</span></td></tr>`;
                     });
                 } else {
-                    rows = `<tr><td colspan="2" class="text-center text-muted py-4">No completed tasks yet.</td></tr>`;
+                    rows = `<tr><td colspan="2" class="text-center text-muted py-3">No completed tasks yet. Keep applying!</td></tr>`;
                 }
                 $("#completedTaskTableBody").html(rows);
             }
@@ -468,6 +586,8 @@
         if (status === 'REJECTED') return 'bg-danger text-white';
         return 'bg-secondary text-white';
     }
+
+    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
 
     function logout() {
         localStorage.clear();

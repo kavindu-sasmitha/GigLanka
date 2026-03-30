@@ -7,7 +7,7 @@
 ## 📺 Project Demonstration
 Click the image below to watch the full technical walkthrough and system demo on YouTube:
 
-[![GigLanka Demo Video](https://img.youtube.com/vi/YOUR_VIDEO_ID_HERE/0.jpg)](https://www.youtube.com/watch?v=YOUR_VIDEO_ID_HERE)
+[![GigLanka Demo Video](https://youtu.be/YG-UORLdWyg?si=AR2OpVFqQvJgosM0)](https://www.youtube.com/watch?v=https://youtu.be/YG-UORLdWyg?si=AR2OpVFqQvJgosM0)
 > *Replace **YOUR_VIDEO_ID_HERE** with your actual YouTube video ID.*
 
 ---

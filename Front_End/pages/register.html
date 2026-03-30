@@ -2,270 +2,496 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GigLanka | Register</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>GigLanka | Join Sri Lanka's #1 Part-Time Job Network</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);
+      background: radial-gradient(circle at 10% 30%, #eef5ea 0%, #d4e2d4 100%);
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      color: #1e2937;
-      padding: 20px 0;
+      color: #1e2a1f;
+      padding: 2rem 1rem;
+      position: relative;
+    }
+
+    /* Cultural decorative elements - Sri Lankan vibe */
+    body::before {
+      content: "🌴";
+      font-size: 240px;
+      position: absolute;
+      bottom: 0px;
+      left: -30px;
+      opacity: 0.08;
+      pointer-events: none;
+      transform: rotate(-8deg);
+      z-index: 0;
+    }
+
+    body::after {
+      content: "🐚";
+      font-size: 200px;
+      position: absolute;
+      top: 5%;
+      right: -20px;
+      opacity: 0.07;
+      pointer-events: none;
+      transform: rotate(12deg);
+      z-index: 0;
     }
 
     .register-container {
       display: flex;
-      background: white;
-      border-radius: 24px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+      background: rgba(255, 255, 255, 0.98);
+      border-radius: 2.2rem;
+      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(16, 185, 129, 0.2);
       overflow: hidden;
-      width: 950px;
+      width: 1150px;
       max-width: 95%;
+      backdrop-filter: blur(0px);
+      z-index: 2;
+      transition: all 0.3s ease;
     }
 
-    /* Left Side - Branding */
+    /* LEFT SIDE - Enhanced Branding with visual richness */
     .left-side {
-      background: linear-gradient(135deg, #10b981, #34d399);
-      color: white;
-      padding: 70px 55px;
-      width: 400px;
+      background: linear-gradient(145deg, #0d3b24 0%, #1f6742 100%);
+      width: 42%;
+      padding: 2.5rem 2.2rem;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: space-between;
+      color: white;
+      position: relative;
+      overflow: hidden;
     }
 
-    .logo-container {
+    .left-side::before {
+      content: "✦";
+      font-size: 180px;
+      position: absolute;
+      bottom: -60px;
+      right: -40px;
+      opacity: 0.12;
+      transform: rotate(20deg);
+      font-family: monospace;
+    }
+
+    .left-side::after {
+      content: "🌿";
+      font-size: 130px;
+      position: absolute;
+      top: 20%;
+      left: -30px;
+      opacity: 0.1;
+      pointer-events: none;
+    }
+
+    .logo-area {
       display: flex;
       align-items: center;
       gap: 14px;
-      margin-bottom: 40px;
-    }
-
-    .sri-lanka-flag {
-      width: 48px;
-      height: 32px;
-      background: linear-gradient(to right, #ff0000 40%, #ffcc00 40%);
-      border: 2px solid rgba(255,255,255,0.9);
+      margin-bottom: 2rem;
       position: relative;
-      border-radius: 4px;
-      overflow: hidden;
+      z-index: 2;
     }
 
-    .sri-lanka-flag::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) rotate(15deg);
-      width: 15px;
-      height: 15px;
-      background: #006600;
-      border-radius: 50%;
+    .flag-badge {
+      width: 52px;
+      height: 40px;
+      background: linear-gradient(125deg, #da3a2b, #e68a2e);
+      border-radius: 12px;
+      position: relative;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255,215,0,0.5);
     }
 
-    .brand-title {
-      font-size: 34px;
-      font-weight: 700;
-      letter-spacing: -1.2px;
+    .flag-badge::after {
+      content: "🦁";
+      font-size: 28px;
+      position: relative;
+      color: #ffdd77;
+      text-shadow: 0 2px 3px rgba(0,0,0,0.3);
     }
 
-    .tagline {
-      font-size: 17.5px;
-      opacity: 0.95;
-      line-height: 1.5;
-      margin-top: 10px;
+    .brand-name {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #fff, #e9f5e6);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
     }
 
-    /* Right Side - Form */
+    .hero-text h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin: 1rem 0 0.8rem;
+      letter-spacing: -1px;
+    }
+
+    .highlight {
+      color: #f9d56e;
+      border-bottom: 3px solid #f9b81b;
+      display: inline-block;
+    }
+
+    .desc-text {
+      font-size: 0.95rem;
+      line-height: 1.55;
+      opacity: 0.92;
+      margin: 0.5rem 0 1.8rem;
+    }
+
+    .stats-grid {
+      display: flex;
+      gap: 1.5rem;
+      margin: 1rem 0;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(4px);
+      border-radius: 40px;
+      padding: 0.5rem 1rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .stat-item i {
+      color: #ffcf4a;
+    }
+
+    .sri-lanka-tag {
+      margin-top: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+      opacity: 0.8;
+    }
+
+    /* RIGHT SIDE - Form with modern aesthetics */
     .right-side {
-      padding: 65px 60px;
-      flex: 1;
+      width: 58%;
+      padding: 2.5rem 2.5rem 2.8rem;
+      background: white;
     }
 
     h2 {
-      font-size: 28px;
-      font-weight: 600;
-      margin-bottom: 6px;
-      color: #0f172a;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1a472a;
+      letter-spacing: -0.3px;
+      margin-bottom: 0.3rem;
     }
 
     .subtitle {
-      color: #64748b;
-      margin-bottom: 35px;
+      color: #5c6e5a;
+      font-size: 0.9rem;
+      margin-bottom: 1.8rem;
+      border-left: 3px solid #2c8c4a;
+      padding-left: 12px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 1.2rem;
+      flex-wrap: wrap;
     }
 
     .form-group {
-      margin-bottom: 22px;
+      margin-bottom: 1.2rem;
+      flex: 1;
+      min-width: 180px;
     }
 
     label {
       display: block;
-      font-size: 14px;
-      font-weight: 500;
-      color: #475569;
-      margin-bottom: 8px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #3b5c3a;
+      margin-bottom: 0.45rem;
+    }
+
+    .input-icon {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-icon i {
+      position: absolute;
+      left: 14px;
+      color: #83b383;
+      font-size: 0.9rem;
+      pointer-events: none;
     }
 
     input, select {
       width: 100%;
-      padding: 14px 18px;
-      border: 1px solid #cbd5e1;
-      border-radius: 12px;
-      font-size: 15px;
-      background: white;
-      color: #1e2937;
-      transition: all 0.3s;
+      padding: 0.85rem 0.9rem 0.85rem 2.4rem;
+      border: 1.5px solid #e0edd9;
+      border-radius: 18px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      background: #fefdf8;
+      transition: all 0.2s ease;
+      font-family: 'Inter', sans-serif;
     }
 
     input:focus, select:focus {
       outline: none;
-      border-color: #10b981;
-      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+      border-color: #279b51;
+      box-shadow: 0 0 0 3px rgba(39, 155, 81, 0.12);
+      background: white;
+    }
+
+    select {
+      appearance: none;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="%234a7848" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>');
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      padding-right: 2.2rem;
     }
 
     .btn-register {
       width: 100%;
-      padding: 15px;
-      background: linear-gradient(135deg, #10b981, #34d399);
+      padding: 0.9rem;
+      background: linear-gradient(115deg, #16813e, #27aa58);
       border: none;
-      border-radius: 12px;
+      border-radius: 40px;
+      font-weight: 700;
+      font-size: 1rem;
       color: white;
-      font-size: 16px;
-      font-weight: 600;
       cursor: pointer;
-      margin-top: 15px;
-      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.25);
+      margin-top: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.25s;
+      box-shadow: 0 8px 18px -8px rgba(22, 129, 62, 0.4);
     }
 
     .btn-register:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.35);
+      background: linear-gradient(115deg, #0f6b34, #1f954f);
+      box-shadow: 0 15px 28px -12px rgba(22, 129, 62, 0.5);
     }
 
     .switch {
       text-align: center;
-      margin-top: 30px;
-      font-size: 14.5px;
-      color: #64748b;
+      margin-top: 1.8rem;
+      font-size: 0.85rem;
+      color: #5f735c;
     }
 
     .switch a {
-      color: #10b981;
-      font-weight: 500;
+      color: #1c6e3f;
+      font-weight: 700;
       text-decoration: none;
+      border-bottom: 1px dashed #a0d0a8;
     }
 
     .switch a:hover {
-      text-decoration: underline;
+      color: #0b4f28;
+      border-bottom-style: solid;
+    }
+
+    .secure-note {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 1.2rem;
+      font-size: 0.68rem;
+      color: #8ea68c;
+    }
+
+    @media (max-width: 820px) {
+      .register-container {
+        flex-direction: column;
+      }
+      .left-side, .right-side {
+        width: 100%;
+      }
+      .left-side {
+        padding: 2rem;
+      }
+      .hero-text h1 {
+        font-size: 1.8rem;
+      }
+      .right-side {
+        padding: 2rem 1.5rem;
+      }
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
     }
   </style>
 </head>
 <body>
 
 <div class="register-container">
-  <!-- Left Side - Sri Lankan Branding -->
+  <!-- LEFT PANEL: Rich Sri Lankan identity & visual storytelling -->
   <div class="left-side">
-    <div class="logo-container">
-      <div class="sri-lanka-flag"></div>
-      <div>
-        <div class="brand-title">GigLanka</div>
+    <div class="logo-area">
+      <div class="flag-badge"></div>
+      <span class="brand-name">GigLanka</span>
+    </div>
+
+    <div class="hero-text">
+      <h1>Join <span class="highlight">Sri Lanka's</span><br>Biggest Gig Economy</h1>
+      <div class="desc-text">
+        <i class="fas fa-rocket" style="margin-right: 8px; color: #ffcd7e;"></i>
+        10,000+ verified workers & task posters from Jaffna to Matara.
+        Start your journey with flexible part-time jobs today.
+      </div>
+      <div class="stats-grid">
+        <div class="stat-item"><i class="fas fa-briefcase"></i> 2k+ Gigs/month</div>
+        <div class="stat-item"><i class="fas fa-rupee-sign"></i> Quick payments</div>
+        <div class="stat-item"><i class="fas fa-clock"></i> Any schedule</div>
       </div>
     </div>
 
-    <h1 style="font-size: 42px; font-weight: 700; line-height: 1.1;">Join Sri Lanka's<br>Biggest Gig Network</h1>
-    <p class="tagline">Find local work opportunities or hire reliable help across the island in minutes.</p>
-
-    <div style="margin-top: auto; font-size: 13.5px; opacity: 0.9;">
-      🇱🇰 Made for Sri Lankans • By Sri Lankans
+    <div class="sri-lanka-tag">
+      <i class="fas fa-map-marker-alt"></i>
+      <span>100% Sri Lankan platform • Support local talent</span>
     </div>
   </div>
 
-  <!-- Right Side - Registration Form -->
+  <!-- RIGHT PANEL: REGISTRATION FORM (All original logic & variables untouched) -->
   <div class="right-side">
-    <h2>Create Your Account</h2>
-    <p class="subtitle">Start earning or hiring today</p>
+    <h2>Create Account</h2>
+    <div class="subtitle">Start earning or hire trusted professionals</div>
 
     <form id="registerForm">
-      <div class="form-group">
-        <label>Full Name</label>
-        <input type="text" id="fullName" placeholder="Kavindu Sasmitha" required>
+      <div class="form-row">
+        <div class="form-group" style="flex:2">
+          <label><i class="far fa-user-circle"></i> Full Name</label>
+          <div class="input-icon">
+            <i class="fas fa-user-pen"></i>
+            <input type="text" id="fullName" placeholder="e.g., Chamari Perera" autocomplete="name" required>
+          </div>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label>Email Address</label>
-        <input type="email" id="email" placeholder="kavindu@example.com" required>
+      <div class="form-row">
+        <div class="form-group">
+          <label><i class="far fa-envelope"></i> Email Address</label>
+          <div class="input-icon">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="email" placeholder="chamari@example.com" autocomplete="email" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-id-card"></i> NIC Number</label>
+          <div class="input-icon">
+            <i class="fas fa-address-card"></i>
+            <input type="text" id="nic" placeholder="200112345678" maxlength="12" autocomplete="off" required>
+          </div>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label>NIC Number</label>
-        <input type="text" id="nic" placeholder="200112345678" maxlength="12" required>
+      <div class="form-row">
+        <div class="form-group">
+          <label><i class="fas fa-map"></i> District</label>
+          <div class="input-icon">
+            <i class="fas fa-location-dot"></i>
+            <select id="district" required>
+              <option value="" disabled selected>Select your district</option>
+              <option value="Ampara">Ampara</option>
+              <option value="Anuradhapura">Anuradhapura</option>
+              <option value="Badulla">Badulla</option>
+              <option value="Batticaloa">Batticaloa</option>
+              <option value="Colombo">Colombo</option>
+              <option value="Galle">Galle</option>
+              <option value="Gampaha">Gampaha</option>
+              <option value="Hambantota">Hambantota</option>
+              <option value="Jaffna">Jaffna</option>
+              <option value="Kalutara">Kalutara</option>
+              <option value="Kandy">Kandy</option>
+              <option value="Kegalle">Kegalle</option>
+              <option value="Kilinochchi">Kilinochchi</option>
+              <option value="Kurunegala">Kurunegala</option>
+              <option value="Mannar">Mannar</option>
+              <option value="Matale">Matale</option>
+              <option value="Matara">Matara</option>
+              <option value="Moneragala">Moneragala</option>
+              <option value="Mullaitivu">Mullaitivu</option>
+              <option value="Nuwara Eliya">Nuwara Eliya</option>
+              <option value="Polonnaruwa">Polonnaruwa</option>
+              <option value="Puttalam">Puttalam</option>
+              <option value="Ratnapura">Ratnapura</option>
+              <option value="Trincomalee">Trincomalee</option>
+              <option value="Vavuniya">Vavuniya</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-briefcase"></i> I want to</label>
+          <div class="input-icon">
+            <i class="fas fa-toggle-on"></i>
+            <select id="role" required>
+              <option value="EMPLOY">🔍 Find Work (Employee / Gig Worker)</option>
+              <option value="TASK_OWNER">📢 Post Tasks & Hire (Task Owner)</option>
+            </select>
+          </div>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label>District</label>
-        <select id="district" required>
-          <option value="" disabled selected>Select your district</option>
-          <option value="Ampara">Ampara</option>
-          <option value="Anuradhapura">Anuradhapura</option>
-          <option value="Badulla">Badulla</option>
-          <option value="Batticaloa">Batticaloa</option>
-          <option value="Colombo">Colombo</option>
-          <option value="Galle">Galle</option>
-          <option value="Gampaha">Gampaha</option>
-          <option value="Hambantota">Hambantota</option>
-          <option value="Jaffna">Jaffna</option>
-          <option value="Kalutara">Kalutara</option>
-          <option value="Kandy">Kandy</option>
-          <option value="Kegalle">Kegalle</option>
-          <option value="Kilinochchi">Kilinochchi</option>
-          <option value="Kurunegala">Kurunegala</option>
-          <option value="Mannar">Mannar</option>
-          <option value="Matale">Matale</option>
-          <option value="Matara">Matara</option>
-          <option value="Moneragala">Moneragala</option>
-          <option value="Mullaitivu">Mullaitivu</option>
-          <option value="Nuwara Eliya">Nuwara Eliya</option>
-          <option value="Polonnaruwa">Polonnaruwa</option>
-          <option value="Puttalam">Puttalam</option>
-          <option value="Ratnapura">Ratnapura</option>
-          <option value="Trincomalee">Trincomalee</option>
-          <option value="Vavuniya">Vavuniya</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>I want to</label>
-        <select id="role" required>
-          <option value="EMPLOY">Find Work (Employee / Gig Worker)</option>
-          <option value="TASK_OWNER">Post Tasks & Hire Help (Task Owner)</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" id="password" placeholder="Create a strong password" required>
+      <div class="form-row">
+        <div class="form-group">
+          <label><i class="fas fa-lock"></i> Password</label>
+          <div class="input-icon">
+            <i class="fas fa-key"></i>
+            <input type="password" id="password" placeholder="Create strong password" autocomplete="new-password" required>
+          </div>
+        </div>
       </div>
 
       <button type="submit" class="btn-register">
-        <i class="fas fa-user-plus me-2"></i> Create Account
+        <i class="fas fa-user-plus"></i> Sign Up - Get Started
       </button>
     </form>
 
     <div class="switch">
-      Already have an account?
-      <a href="login.html">Sign In</a>
+      Already have an account? <a href="login.html">Sign in →</a>
+    </div>
+    <div class="secure-note">
+      <i class="fas fa-shield-heart"></i> Your info is secure | 100% Free registration
     </div>
   </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
+  // ========== ORIGINAL REGISTRATION LOGIC — COMPLETELY UNCHANGED ==========
+  // All variable names, functions, endpoints, and behavior remain identical.
   $(document).ready(function() {
     $('#registerForm').on('submit', function(e) {
       e.preventDefault();

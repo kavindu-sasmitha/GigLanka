@@ -48,13 +48,13 @@ public class TaskController {
         return new ResponseEntity<>(new ApiResponse<>(200, "Tasks fetched successfully", taskList), HttpStatus.OK);
     }
 
-    // Hyper-Local: දිස්ත්‍රික්කය අනුව වැඩ සෙවීම
+
     @GetMapping("/nearby/{district}")
     public ResponseEntity<List<TaskDto>> getNearbyTasks(@PathVariable String district) {
         return ResponseEntity.ok(taskService.getTasksByDistrict(district));
     }
 
-    // Flash Match: අයිතිකරු විසින් ශිෂ්‍යයෙකුගේ ඉල්ලීම පිළිගැනීම
+
     @PostMapping("/accept/{taskId}/{employeeId}")
     public ResponseEntity<ApiResponse<String>> acceptTask(@PathVariable long taskId, @PathVariable long employeeId) {
         taskService.flashMatch(taskId, employeeId);
@@ -63,7 +63,7 @@ public class TaskController {
         ), HttpStatus.OK);
     }
 
-    // Task Completion: වැඩේ ඉවර බව තහවුරු කර මුදල් ගෙවීම (Release Payment)
+
     @PostMapping("/complete/{taskId}")
     public ResponseEntity<ApiResponse<String>> completeTask(@PathVariable long taskId) {
         taskService.completeTask(taskId);

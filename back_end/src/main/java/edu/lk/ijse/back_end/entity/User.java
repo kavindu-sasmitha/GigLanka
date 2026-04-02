@@ -25,5 +25,5 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    // Security methods (getAuthorities etc. stay same as before)
+
 }

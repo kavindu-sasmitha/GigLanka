@@ -32,7 +32,7 @@ public class TaskApplicationServiceImpl implements TaskApplicationService {
 
     @Override
     public void saveApplication(TaskApplicationDto dto) {
-        // RuntimeException වෙනුවට NotFoundException භාවිතා කරන ලදී
+
         Task task = taskRepository.findById(dto.getTask_id())
                 .orElseThrow(() -> new NotFoundException("Task not found with ID: " + dto.getTask_id()));
 
@@ -71,14 +71,14 @@ public class TaskApplicationServiceImpl implements TaskApplicationService {
 
     @Override
     public void updateStatus(long id, String status) {
-        // Application එක නැති විට Custom NotFoundException එක throw කරයි
+
         TaskApplication app = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Application not found with ID: " + id));
 
         try {
             app.setStatus(ApplicationStatus.valueOf(status.toUpperCase()));
         } catch (IllegalArgumentException e) {
-            // වැරදි Status එකක් එවුවොත් handle කිරීමට (Optional)
+
             throw new RuntimeException("Invalid status provided: " + status);
         }
 
@@ -87,7 +87,7 @@ public class TaskApplicationServiceImpl implements TaskApplicationService {
 
     @Override
     public void deleteApplication(long id) {
-        // Delete කිරීමට පෙර id එක තියෙනවද බලන්න පුළුවන් (Safe practice)
+
         if (!repository.existsById(id)) {
             throw new NotFoundException("Cannot delete. Application not found with ID: " + id);
         }
